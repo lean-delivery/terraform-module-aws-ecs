@@ -80,6 +80,82 @@ resource "aws_iam_role_policy_attachment" "attach-allow-elb" {
   policy_arn = "${aws_iam_policy.ecs-service-allow-elb.arn}"
 }
 
-data "aws_iam_role" "ecs-task-execution" {
-  name = "ecsTaskExecutionRole"
+# data "aws_iam_role" "ecs-task-execution" {
+#   name = "ecsTaskExecutionRole"
+# }
+
+data "aws_iam_policy_document" "ecs-task-access-ecr" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ecr:GetAuthorizationToken",
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:BatchGetImage",
+    ]
+
+    resources = [
+      "*",
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "ecs-task-access-cloudwatch" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+
+    resources = [
+      "*",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "ecs-task-access-ecr" {
+  name        = "ecs-task-allow-ec2-${var.project}-${var.service}-${var.environment}"
+  description = "ECS task policy to access ECR"
+  policy      = "${data.aws_iam_policy_document.ecs-task-access-ecr.json}"
+}
+
+resource "aws_iam_policy" "ecs-task-access-cloudwatch" {
+  name        = "ecs-task-allow-elb-${var.project}-${var.service}-${var.environment}"
+  description = "ECS task policy to access CloudWatch"
+  policy      = "${data.aws_iam_policy_document.ecs-task-access-cloudwatch.json}"
+}
+
+resource "aws_iam_role" "ecs-task-execution" {
+  name = "ecs-task-${var.project}-${var.service}-${var.environment}"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+
+  tags = "${merge(local.default_tags, var.tags)}"
+}
+
+resource "aws_iam_role_policy_attachment" "attach-allow-ecr" {
+  role       = "${aws_iam_role.ecs-task-execution.name}"
+  policy_arn = "${aws_iam_policy.ecs-task-access-ecr.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "attach-allow-cw" {
+  role       = "${aws_iam_role.ecs-task-execution.name}"
+  policy_arn = "${aws_iam_policy.ecs-task-access-cloudwatch.arn}"
 }

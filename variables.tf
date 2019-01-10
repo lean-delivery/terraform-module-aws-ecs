@@ -1,6 +1,6 @@
 variable "project" {
   type        = "string"
-  default     = "project"
+  default     = "test"
   description = "Project name is used to identify resources"
 }
 
@@ -37,6 +37,24 @@ variable "minimum_service_capacity" {
 
 variable "container_definitions" {
   description = "Fargate container definition"
+
+  default = <<DEFINITION
+[
+  {
+    "name": "SuperService-env",
+    "cpu": 512,
+    "memory": 512,
+    "image": "nginx:alpine",
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 80,
+        "hostPort": 80
+      }
+    ]
+  }
+]
+DEFINITION
 }
 
 variable "tags" {
