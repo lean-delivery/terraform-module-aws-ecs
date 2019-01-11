@@ -3,7 +3,7 @@ module "security-group" {
   version = "2.9.0"
 
   # insert the 2 required variables here
-  name        = "${var.project}-${var.environment}-ecs-fargate"
+  name        = "${var.project}-${var.environment}-ecs-fargate-${var.service}"
   description = "${upper(var.project)} ${title(var.environment)} Fargate Container Security Group"
   vpc_id      = "${var.vpc_id}"
 
