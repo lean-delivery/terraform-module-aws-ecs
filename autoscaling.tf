@@ -1,55 +1,3 @@
-data "aws_iam_policy_document" "service-autoscaling" {
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "application-autoscaling:*",
-      "cloudwatch:DescribeAlarms",
-      "cloudwatch:PutMetricAlarm",
-      "cloudwatch:GetMetricStatistics",
-      "ecs:DescribeServices",
-      "ecs:UpdateService",
-    ]
-
-    resources = [
-      "*",
-    ]
-  }
-}
-
-resource "aws_iam_policy" "service-autoscaling" {
-  name        = "service-autoscaling-${var.project}-${var.service}-${var.environment}"
-  description = "ECS autoscaling policy"
-  policy      = "${data.aws_iam_policy_document.service-autoscaling.json}"
-}
-
-resource "aws_iam_role" "service-autoscaling" {
-  name = "ecs-autoscaling-${var.project}-${var.service}-${var.environment}"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "application-autoscaling.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-
-  tags = "${merge(local.default_tags, var.tags)}"
-}
-
-resource "aws_iam_role_policy_attachment" "attach-autoscaling" {
-  role       = "${aws_iam_role.service-autoscaling.name}"
-  policy_arn = "${aws_iam_policy.service-autoscaling.arn}"
-}
-
 resource "aws_cloudwatch_metric_alarm" "cpu-high" {
   alarm_name          = "${title(lower(var.project))}-${title(lower(var.environment))}-${title(lower(var.service))}-AutoScalingCPUAlarmHigh"
   alarm_description   = "Containers CPU Utilization High"
@@ -131,10 +79,13 @@ resource "aws_appautoscaling_policy" "scale_policy_low" {
 }
 
 resource "aws_appautoscaling_target" "ecs_target" {
-  max_capacity       = 10
-  min_capacity       = 1
-  resource_id        = "service/${aws_ecs_cluster.this.name}/${aws_ecs_service.this.name}"
-  role_arn           = "${aws_iam_role.service-autoscaling.arn}"
+  max_capacity = 10
+  min_capacity = 1
+  resource_id  = "service/${aws_ecs_cluster.this.name}/${aws_ecs_service.this.name}"
+
+  ### https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-service-linked-roles.html
+  # role_arn           = "${aws_iam_role.service-autoscaling.arn}"
+
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
 }
