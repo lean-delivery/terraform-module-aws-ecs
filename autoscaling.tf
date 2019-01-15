@@ -57,7 +57,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high" {
   statistic           = "Average"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "1"
-  namespace           = "AWS/EC2"
+  namespace           = "AWS/ECS"
   period              = "60"
   threshold           = "50"
 
@@ -76,7 +76,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low" {
   statistic           = "Average"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = "2"
-  namespace           = "AWS/EC2"
+  namespace           = "AWS/ECS"
   period              = "60"
   threshold           = "40"
 
