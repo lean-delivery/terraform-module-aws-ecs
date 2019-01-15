@@ -51,7 +51,7 @@ resource "aws_iam_role_policy_attachment" "attach-autoscaling" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu-high" {
-  alarm_name          = "AutoScalingCPUAlarmHigh"
+  alarm_name          = "${title(lower(var.project))}-${title(lower(var.environment))}-${title(lower(var.service))}-AutoScalingCPUAlarmHigh"
   alarm_description   = "Containers CPU Utilization High"
   metric_name         = "CPUUtilization"
   statistic           = "Average"
@@ -70,7 +70,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu-low" {
-  alarm_name          = "AutoScalingCPUAlarmLow"
+  alarm_name          = "${title(lower(var.project))}-${title(lower(var.environment))}-${title(lower(var.service))}-AutoScalingCPUAlarmLow"
   alarm_description   = "Containers CPU Utilization Low"
   metric_name         = "CPUUtilization"
   statistic           = "Average"
@@ -89,7 +89,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low" {
 }
 
 resource "aws_appautoscaling_policy" "scale_policy_high" {
-  name               = "${var.project}-${var.environment}-${var.service}-ScalePolicyHigh"
+  name               = "${title(lower(var.project))}-${title(lower(var.environment))}-${title(lower(var.service))}-ScalePolicyHigh"
   policy_type        = "StepScaling"
   resource_id        = "service/${aws_ecs_cluster.this.name}/${aws_ecs_service.this.name}"
   scalable_dimension = "ecs:service:DesiredCount"
@@ -110,7 +110,7 @@ resource "aws_appautoscaling_policy" "scale_policy_high" {
 }
 
 resource "aws_appautoscaling_policy" "scale_policy_low" {
-  name               = "${var.project}-${var.environment}-${var.service}-ScalePolicyLow"
+  name               = "${title(lower(var.project))}-${title(lower(var.environment))}-${title(lower(var.service))}-ScalePolicyLow"
   policy_type        = "StepScaling"
   resource_id        = "service/${aws_ecs_cluster.this.name}/${aws_ecs_service.this.name}"
   scalable_dimension = "ecs:service:DesiredCount"
