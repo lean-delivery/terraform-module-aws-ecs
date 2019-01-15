@@ -62,7 +62,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high" {
   threshold           = "50"
 
   dimensions {
-    ClusterName = "${aws_ecs_cluster.this.id}"
+    ClusterName = "${aws_ecs_cluster.this.name}"
     ServiceName = "${var.service}-${var.environment}"
   }
 
@@ -81,7 +81,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low" {
   threshold           = "40"
 
   dimensions {
-    ClusterName = "${aws_ecs_cluster.this.id}"
+    ClusterName = "${aws_ecs_cluster.this.name}"
     ServiceName = "${var.service}-${var.environment}"
   }
 

@@ -33,6 +33,11 @@ output "ecs_cluster_id" {
   description = "ECS cluster ID"
 }
 
+output "ecs_cluster_name" {
+  value       = "${aws_ecs_cluster.this.name}"
+  description = "ECS cluster name"
+}
+
 output "security_group_description" {
   description = "The description of the security group."
   value       = "${module.security-group.this_security_group_description}"
