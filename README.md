@@ -44,16 +44,37 @@ EOF
 |------|-------------|:----:|:-----:|:-----:|
 | alb\_target\_group\_arn | ARN of target group | string | - | yes |
 | container\_cpu | Amount of cpu used by the task | string | `512` | no |
-| container\_definitions | Fargate container definition | string | - | yes |
+| container\_definitions | Fargate container definition | string | see default value bellow this table | no |
 | container\_memory | Amount of memory used by the task | string | `1024` | no |
 | container\_port | exposed port in container | string | `80` | no |
+| ecs\_cluster\_id | ID of existing ECS cluster (if want to attach service and etc to existing cluster) | string | `None` | no |
 | environment | Environment name is used to identify resources | string | `env` | no |
 | minimum\_service\_capacity | The number of instances of the task definition to place and keep running | string | `1` | no |
-| project | Project name is used to identify resources | string | `project` | no |
+| project | Project name is used to identify resources | string | `test` | no |
 | service | Service name (will be used as family name in task definition) | string | `SuperService` | no |
 | subnets | List of subnets where to run ECS Service | list | - | yes |
 | tags | Additional tags for all resources | map | `<map>` | no |
 | vpc\_id | The ID of VPC | string | - | yes |
+
+### Container definitions default value
+
+```HCL
+[
+  {
+    "name": "SuperService-env",
+    "cpu": 512,
+    "memory": 512,
+    "image": "nginx:alpine",
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 80,
+        "hostPort": 80
+      }
+    ]
+  }
+]
+```
 
 ## Outputs
 
@@ -61,6 +82,7 @@ EOF
 |------|-------------|
 | ecs\_cluster\_arn | ECS cluster ARN |
 | ecs\_cluster\_id | ECS cluster ID |
+| ecs\_cluster\_name | ECS cluster name |
 | ecs\_service\_iam\_role\_arn | ARN fo created ECS service |
 | ecs\_service\_iam\_role\_name | Name of IAM role that attached to ECS service |
 | ecs\_task\_execution\_container\_cpu | Amount of cpu used by the task |
