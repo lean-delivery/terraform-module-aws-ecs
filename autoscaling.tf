@@ -10,7 +10,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high" {
   threshold           = "50"
 
   dimensions {
-    ClusterName = "${aws_ecs_cluster.this.name}"
+    ClusterName = "${local.ecs_cluster_name}"
     ServiceName = "${var.service}-${var.environment}"
   }
 
@@ -29,7 +29,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low" {
   threshold           = "40"
 
   dimensions {
-    ClusterName = "${aws_ecs_cluster.this.name}"
+    ClusterName = "${local.ecs_cluster_name}"
     ServiceName = "${var.service}-${var.environment}"
   }
 
@@ -39,7 +39,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low" {
 resource "aws_appautoscaling_policy" "scale_policy_high" {
   name               = "${title(lower(var.project))}-${title(lower(var.environment))}-${title(lower(var.service))}-ScalePolicyHigh"
   policy_type        = "StepScaling"
-  resource_id        = "service/${aws_ecs_cluster.this.name}/${aws_ecs_service.this.name}"
+  resource_id        = "service/${local.ecs_cluster_name}/${aws_ecs_service.this.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
 
@@ -60,7 +60,7 @@ resource "aws_appautoscaling_policy" "scale_policy_high" {
 resource "aws_appautoscaling_policy" "scale_policy_low" {
   name               = "${title(lower(var.project))}-${title(lower(var.environment))}-${title(lower(var.service))}-ScalePolicyLow"
   policy_type        = "StepScaling"
-  resource_id        = "service/${aws_ecs_cluster.this.name}/${aws_ecs_service.this.name}"
+  resource_id        = "service/${local.ecs_cluster_name}/${aws_ecs_service.this.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
 
@@ -81,7 +81,7 @@ resource "aws_appautoscaling_policy" "scale_policy_low" {
 resource "aws_appautoscaling_target" "ecs_target" {
   max_capacity = 10
   min_capacity = 1
-  resource_id  = "service/${aws_ecs_cluster.this.name}/${aws_ecs_service.this.name}"
+  resource_id  = "service/${local.ecs_cluster_name}/${aws_ecs_service.this.name}"
 
   ### https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-service-linked-roles.html
   # role_arn           = "${aws_iam_role.service-autoscaling.arn}"

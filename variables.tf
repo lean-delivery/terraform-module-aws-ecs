@@ -15,6 +15,11 @@ variable "service" {
   default     = "SuperService"
 }
 
+variable "ecs_cluster_id" {
+  description = "ID of existing ECS cluster (if want to attach service and etc to existing cluster)"
+  default     = "None"
+}
+
 variable "container_cpu" {
   description = "Amount of cpu used by the task"
   default     = "512"

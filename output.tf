@@ -24,17 +24,17 @@ output "ecs_task_execution_container_memory" {
 }
 
 output "ecs_cluster_arn" {
-  value       = "${aws_ecs_cluster.this.arn}"
+  value       = "${local.ecs_cluster_arn}"
   description = "ECS cluster ARN"
 }
 
 output "ecs_cluster_id" {
-  value       = "${aws_ecs_cluster.this.id}"
+  value       = "${local.ecs_cluster_id}"
   description = "ECS cluster ID"
 }
 
 output "ecs_cluster_name" {
-  value       = "${aws_ecs_cluster.this.name}"
+  value       = "${local.ecs_cluster_name}"
   description = "ECS cluster name"
 }
 
