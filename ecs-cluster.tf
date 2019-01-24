@@ -54,4 +54,8 @@ resource "aws_ecs_service" "this" {
     container_name   = "${var.service}-${var.environment}"
     container_port   = "${var.container_port}"
   }
+
+  lifecycle {
+    ignore_changes = ["desired_count"]
+  }
 }
