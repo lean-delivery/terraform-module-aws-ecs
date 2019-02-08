@@ -23,8 +23,8 @@ resource "aws_ecs_task_definition" "this" {
   memory                   = "${var.container_memory}"
   network_mode             = "awsvpc"
 
-  execution_role_arn = "${aws_iam_role.ecs-task-execution.arn}"
-
+  execution_role_arn    = "${aws_iam_role.ecs-task-execution.arn}"
+  task_role_arn         = "${var.task_role_arn}"
   container_definitions = "${var.container_definitions}"
   tags                  = "${merge(local.default_tags, var.tags)}"
 }

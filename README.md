@@ -43,6 +43,7 @@ EOF
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | alb\_target\_group\_arn | ARN of target group | string | - | yes |
+| task\_role\_arn | ARN of IAM role that will be passed into container | string | - | no |
 | container\_cpu | Amount of cpu used by the task | string | `512` | no |
 | container\_definitions | Fargate container definition | string | see default value bellow this table | no |
 | container\_memory | Amount of memory used by the task | string | `1024` | no |

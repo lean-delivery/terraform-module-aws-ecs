@@ -61,7 +61,10 @@ variable "container_definitions" {
 ]
 DEFINITION
 }
-
+variable "task_role_arn" {
+  description = "ARN of IAM role that should be passed into container to access AWS resources from it."
+  default     = ""
+}
 variable "tags" {
   type        = "map"
   description = "Additional tags for all resources"
