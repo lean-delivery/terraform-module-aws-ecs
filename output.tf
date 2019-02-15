@@ -10,6 +10,11 @@ output "ecs_service_iam_role_name" {
 
 output "ecs_task_execution_iam_role_arn" {
   value       = "${aws_iam_role.ecs-task-execution.arn}"
+  description = "Arn of IAM role that attached to ECS task execution"
+}
+
+output "ecs_task_execution_iam_role_name" {
+  value       = "${aws_iam_role.ecs-task-execution.name}"
   description = "Name of IAM role that attached to ECS task execution"
 }
 
