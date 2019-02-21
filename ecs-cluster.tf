@@ -1,11 +1,11 @@
 resource "aws_ecs_cluster" "this" {
-  count = "${ var.ecs_cluster_id ? 1 : 0 }"
+  count = "${ var.use_existant_cluster ? 1 : 0 }"
   name  = "${var.project}-${var.environment}"
   tags  = "${merge(local.default_tags, var.tags)}"
 }
 
 data "aws_ecs_cluster" "this" {
-  count        = "${ var.ecs_cluster_id ? 0 : 1 }"
+  count        = "${ var.use_existant_cluster ? 0 : 1 }"
   cluster_name = "${var.project}-${var.environment}"
 }
 

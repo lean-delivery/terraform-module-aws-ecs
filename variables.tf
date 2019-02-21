@@ -15,9 +15,14 @@ variable "service" {
   default     = "SuperService"
 }
 
+variable "use_existant_cluster" {
+  description = "Bool statement to declare usage of existant ECS cluster"
+  default     = "false"
+}
+
 variable "ecs_cluster_id" {
   description = "ID of existing ECS cluster (if want to attach service and etc to existing cluster)"
-  default     = "false"
+  default     = "none"
 }
 
 variable "container_cpu" {
