@@ -43,18 +43,19 @@ EOF
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | alb\_target\_group\_arn | ARN of target group | string | - | yes |
-| task\_role\_arn | ARN of IAM role that will be passed into container | string | - | no |
 | container\_cpu | Amount of cpu used by the task | string | `512` | no |
 | container\_definitions | Fargate container definition | string | see default value bellow this table | no |
 | container\_memory | Amount of memory used by the task | string | `1024` | no |
 | container\_port | exposed port in container | string | `80` | no |
-| ecs\_cluster\_id | ID of existing ECS cluster (if want to attach service and etc to existing cluster) | string | `None` | no |
+| ecs\_cluster\_id | ID of existing ECS cluster (if want to attach service and etc to existing cluster) | string | `none` | no |
 | environment | Environment name is used to identify resources | string | `env` | no |
 | minimum\_service\_capacity | The number of instances of the task definition to place and keep running | string | `1` | no |
 | project | Project name is used to identify resources | string | `test` | no |
 | service | Service name (will be used as family name in task definition) | string | `SuperService` | no |
 | subnets | List of subnets where to run ECS Service | list | - | yes |
 | tags | Additional tags for all resources | map | `<map>` | no |
+| task\_role\_arn | ARN of IAM role that should be passed into container to access AWS resources from it. | string | `` | no |
+| use\_existant\_cluster | Bool statement to declare usage of existant ECS cluster | string | `false` | no |
 | vpc\_id | The ID of VPC | string | - | yes |
 
 ### Container definitions default value
@@ -88,7 +89,8 @@ EOF
 | ecs\_service\_iam\_role\_name | Name of IAM role that attached to ECS service |
 | ecs\_task\_execution\_container\_cpu | Amount of cpu used by the task |
 | ecs\_task\_execution\_container\_memory | Amount of memory used by the task |
-| ecs\_task\_execution\_iam\_role\_arn | Name of IAM role that attached to ECS task execution |
+| ecs\_task\_execution\_iam\_role\_arn | Arn of IAM role that attached to ECS task execution |
+| ecs\_task\_execution\_iam\_role\_name | Name of IAM role that attached to ECS task execution |
 | security\_group\_description | The description of the security group. |
 | security\_group\_id | The ID of the security group. |
 | security\_group\_name | The name of the security group. |
