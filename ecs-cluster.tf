@@ -6,7 +6,7 @@ resource "aws_ecs_cluster" "this" {
 
 data "aws_ecs_cluster" "this" {
   count        = "${ var.use_existant_cluster ? 1 : 0 }"
-  cluster_name = "${var.project}-${var.environment}"
+  cluster_name = "${var.ecs_cluster_name}"
 }
 
 locals {
