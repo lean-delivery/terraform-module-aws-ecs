@@ -42,7 +42,7 @@ resource "aws_ecs_service" "this" {
   deployment_minimum_healthy_percent = "100"
 
   desired_count                     = "${var.minimum_service_capacity}"
-  health_check_grace_period_seconds = "30"
+  health_check_grace_period_seconds = "${var.health_check_grace_period_seconds}"
 
   network_configuration {
     subnets         = ["${var.subnets}"]
