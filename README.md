@@ -50,6 +50,7 @@ EOF
 | ecs\_cluster\_id | ID of existing ECS cluster (if want to attach service and etc to existing cluster) | string | `none` | no |
 | environment | Environment name is used to identify resources | string | `env` | no |
 | minimum\_service\_capacity | The number of instances of the task definition to place and keep running | string | `1` | no |
+| health\_check\_grace\_period\_seconds | Seconds to ignore failing load balancer health checks on newly instantiated tasks | string | `30` | no |
 | project | Project name is used to identify resources | string | `test` | no |
 | service | Service name (will be used as family name in task definition) | string | `SuperService` | no |
 | subnets | List of subnets where to run ECS Service | list | - | yes |
