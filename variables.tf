@@ -82,6 +82,11 @@ variable "task_role_arn" {
   default     = ""
 }
 
+variable "ecs_launch_type" {
+  description = "ECS launch type (EC2 or Fargate)"
+  default     = "Fargate"
+}
+
 variable "tags" {
   type        = "map"
   description = "Additional tags for all resources"
