@@ -29,17 +29,17 @@ output "ecs_task_execution_container_memory" {
 }
 
 output "ecs_cluster_arn" {
-  value       = "${local.ecs_cluster_arn}"
+  value       = "${var.ecs_launch_type == "Fargate" ? "${local.ecs_cluster_arn}":"${local.ecs_cluster_arn_ec2}"}"
   description = "ECS cluster ARN"
 }
 
 output "ecs_cluster_id" {
-  value       = "${local.ecs_cluster_id}"
+  value       = "${var.ecs_launch_type == "Fargate" ? "${local.ecs_cluster_id}":"${local.ecs_cluster_id_ec2}"}"
   description = "ECS cluster ID"
 }
 
 output "ecs_cluster_name" {
-  value       = "${local.ecs_cluster_name}"
+  value       = "${var.ecs_launch_type == "Fargate" ? "${local.ecs_cluster_name}":"${local.ecs_cluster_name_ec2}"}"
   description = "ECS cluster name"
 }
 
@@ -66,4 +66,9 @@ output "security_group_owner_id" {
 output "security_group_vpc_id" {
   description = "The VPC ID."
   value       = "${module.security-group.this_security_group_vpc_id}"
+}
+
+output "vpc_id" {
+  description = "The VPC ID."
+  value       = "${var.vpc_id}"
 }

@@ -106,4 +106,11 @@ variable "subnets" {
 variable "alb_target_group_arn" {
   description = "ARN of target group"
   type        = "string"
+  default     = "None"
+}
+
+variable "key-pair-name" {
+  description = "key-pair name for ec2"
+  type        = "string"
+  default     = "ecs-nodes"
 }
