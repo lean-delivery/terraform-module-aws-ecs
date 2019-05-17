@@ -1,20 +1,3 @@
-resource "aws_ecs_cluster" "this_ec2" {
-  count = "${ var.use_existant_cluster ? 0 : 1 }"
-  name  = "${var.project}-${var.environment}"
-  tags  = "${merge(local.default_tags, var.tags)}"
-}
-
-data "aws_ecs_cluster" "this_ec2" {
-  count        = "${ var.use_existant_cluster ? 1 : 0 }"
-  cluster_name = "${var.ecs_cluster_name}"
-}
-
-locals {
-  ecs_cluster_id_ec2   = "${element(concat(aws_ecs_cluster.this_ec2.*.id, list(var.ecs_cluster_id)), 0)}"
-  ecs_cluster_arn_ec2  = "${element(concat(aws_ecs_cluster.this_ec2.*.arn, data.aws_ecs_cluster.this_ec2.*.arn), 0)}"
-  ecs_cluster_name_ec2 = "${element(concat(aws_ecs_cluster.this_ec2.*.name, data.aws_ecs_cluster.this_ec2.*.cluster_name), 0)}"
-}
-
 resource "aws_iam_instance_profile" "ecs-instance-profile_ec2" {
   name = "ecs-instance-profile"
   path = "/"
@@ -22,7 +5,7 @@ resource "aws_iam_instance_profile" "ecs-instance-profile_ec2" {
   provisioner "local-exec" {
     command = "sleep 60"
   }
-  count = "${var.ecs_launch_type == "EC2" ? 1 : 0}"
+  count = "${data.aws_partition.current.partition == "aws-cn" ? "${ var.use_existant_cluster ? 0 : 1 }" : 0}"
 }
 
 resource "aws_launch_configuration" "ecs-launch-configuration_ec2" {
@@ -45,10 +28,10 @@ resource "aws_launch_configuration" "ecs-launch-configuration_ec2" {
   associate_public_ip_address = "false"
   user_data                   = <<EOF
                                   #!/bin/bash -xe
-      echo "ECS_CLUSTER=nrw-cn-north-1" >> /etc/ecs/ecs.config
+      echo "ECS_CLUSTER=${local.ecs_cluster_name}" >> /etc/ecs/ecs.config
       start ecs
       EOF
-  count                       = "${var.ecs_launch_type == "EC2" ? 1 : 0}"
+  count = "${data.aws_partition.current.partition == "aws-cn" ? "${ var.use_existant_cluster ? 0 : 1 }" : 0}"
 }
 
 resource "aws_autoscaling_group" "ecs-autoscaling-group" {
@@ -67,7 +50,7 @@ resource "aws_autoscaling_group" "ecs-autoscaling-group" {
     value = "${var.project}-${var.environment}"
     propagate_at_launch = true
   }
-  count                       = "${var.ecs_launch_type == "EC2" ? 1 : 0}"
+  count = "${data.aws_partition.current.partition == "aws-cn" ? "${ var.use_existant_cluster ? 0 : 1 }" : 0}"
 }
 
 resource "aws_ecs_task_definition" "this_ec2" {
@@ -82,7 +65,7 @@ resource "aws_ecs_task_definition" "this_ec2" {
   task_role_arn               = "${var.task_role_arn}"
   container_definitions       = "${var.container_definitions}"
   tags                        = "${merge(local.default_tags, var.tags)}"
-  count                       = "${var.ecs_launch_type == "EC2" ? 1 : 0}"
+  count                       = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
 }
 
 data "aws_security_group" "this_ec2" {
@@ -91,7 +74,7 @@ data "aws_security_group" "this_ec2" {
 
 resource "aws_ecs_service" "this_ec2" {
   name                               = "${var.service}-${var.environment}"
-  cluster                            = "${local.ecs_cluster_id_ec2}"
+  cluster                            = "${local.ecs_cluster_id}"
   task_definition                    = "${aws_ecs_task_definition.this_ec2.arn}"
   launch_type                        = "EC2"
   deployment_maximum_percent         = "200"
@@ -105,14 +88,14 @@ resource "aws_ecs_service" "this_ec2" {
     security_groups                  = ["${data.aws_security_group.this_ec2.id}"]
   }
 
-//  load_balancer {
-//    target_group_arn                 = "${var.alb_target_group_arn}"
-//    container_name                   = "${var.service}-${var.environment}"
-//    container_port                   = "${var.container_port}"
-//  }
+  load_balancer {
+    target_group_arn                 = "${var.alb_target_group_arn}"
+    container_name                   = "${var.service}-${var.environment}"
+    container_port                   = "${var.container_port}"
+  }
 
   lifecycle {
     ignore_changes                   = ["desired_count"]
   }
-  count                              = "${var.ecs_launch_type == "EC2" ? 1 : 0}"
+  count                              = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
 }

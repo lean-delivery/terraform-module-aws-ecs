@@ -1,11 +1,10 @@
 resource "aws_ecs_cluster" "this" {
-  count = "${ var.use_existant_cluster ? 0 : 1 }"
+  count = "${var.use_existant_cluster ? 0 : 1 }"
   name  = "${var.project}-${var.environment}"
   tags  = "${merge(local.default_tags, var.tags)}"
 }
 
 data "aws_ecs_cluster" "this" {
-  count        = "${ var.use_existant_cluster ? 1 : 0 }"
   cluster_name = "${var.ecs_cluster_name}"
 }
 
@@ -27,7 +26,7 @@ resource "aws_ecs_task_definition" "this" {
   task_role_arn            = "${var.task_role_arn}"
   container_definitions    = "${var.container_definitions}"
   tags                     = "${merge(local.default_tags, var.tags)}"
-  count                    = "${var.ecs_launch_type == "Fargate" ? 1 : 0}"
+  count                    = "${data.aws_partition.current.partition == "aws" ? 1 : 0}"
 }
 
 data "aws_security_group" "this" {
@@ -59,5 +58,5 @@ resource "aws_ecs_service" "this" {
   lifecycle {
     ignore_changes   = ["desired_count"]
   }
-  count              = "${var.ecs_launch_type == "Fargate" ? 1 : 0}"
+  count              = "${data.aws_partition.current.partition == "aws" ? 1 : 0}"
 }

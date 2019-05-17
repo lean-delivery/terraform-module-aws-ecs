@@ -83,8 +83,8 @@ variable "task_role_arn" {
 }
 
 variable "ecs_launch_type" {
-  description = "ECS launch type (EC2 or Fargate)"
-  default     = "Fargate"
+  description = "ECS launch type (EC2 or FARGATE)"
+  default     = "FARGATE"
 }
 
 variable "tags" {

@@ -13,7 +13,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high" {
     ClusterName = "${local.ecs_cluster_name}"
     ServiceName = "${var.service}-${var.environment}"
   }
-  count         = "${var.ecs_launch_type == "Fargate" ? 1 : 0}"
+  count         = "${data.aws_partition.current.partition == "aws" ? 1 : 0}"
   alarm_actions = ["${aws_appautoscaling_policy.scale_policy_high.arn}"]
 }
 
@@ -32,7 +32,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high_ec2" {
     ClusterName = "${local.ecs_cluster_name}"
     ServiceName = "${var.service}-${var.environment}"
   }
-  count         = "${var.ecs_launch_type == "EC2" ? 1 : 0}"
+  count         = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
   alarm_actions = ["${aws_appautoscaling_policy.scale_policy_high_ec2.arn}"]
 }
 
@@ -51,7 +51,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low" {
     ClusterName = "${local.ecs_cluster_name}"
     ServiceName = "${var.service}-${var.environment}"
   }
-  count         = "${var.ecs_launch_type == "Fargate" ? 1 : 0}"
+  count         = "${data.aws_partition.current.partition == "aws" ? 1 : 0}"
   alarm_actions = ["${aws_appautoscaling_policy.scale_policy_low.arn}"]
 }
 
@@ -70,7 +70,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low_ec2" {
     ClusterName = "${local.ecs_cluster_name}"
     ServiceName = "${var.service}-${var.environment}"
   }
-  count      = "${var.ecs_launch_type == "EC2" ? 1 : 0}"
+  count      = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
   alarm_actions = ["${aws_appautoscaling_policy.scale_policy_low_ec2.arn}"]
 }
 
@@ -91,7 +91,7 @@ resource "aws_appautoscaling_policy" "scale_policy_high" {
       scaling_adjustment          = 1
     }
   }
-  count      = "${var.ecs_launch_type == "Fargate" ? 1 : 0}"
+  count      = "${data.aws_partition.current.partition == "aws" ? 1 : 0}"
   depends_on = ["aws_appautoscaling_target.ecs_target"]
 }
 
@@ -112,7 +112,7 @@ resource "aws_appautoscaling_policy" "scale_policy_high_ec2" {
       scaling_adjustment          = 1
     }
   }
-  count      = "${var.ecs_launch_type == "EC2" ? 1 : 0}"
+  count      = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
   depends_on = ["aws_appautoscaling_target.ecs_target_ec2"]
 }
 
@@ -133,7 +133,7 @@ resource "aws_appautoscaling_policy" "scale_policy_low" {
       scaling_adjustment          = -1
     }
   }
-  count      = "${var.ecs_launch_type == "Fargate" ? 1 : 0}"
+  count      = "${data.aws_partition.current.partition == "aws" ? 1 : 0}"
   depends_on = ["aws_appautoscaling_target.ecs_target"]
 }
 
@@ -154,7 +154,7 @@ resource "aws_appautoscaling_policy" "scale_policy_low_ec2" {
       scaling_adjustment          = -1
     }
   }
-  count      = "${var.ecs_launch_type == "EC2" ? 1 : 0}"
+  count      = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
   depends_on = ["aws_appautoscaling_target.ecs_target_ec2"]
 }
 
@@ -168,7 +168,7 @@ resource "aws_appautoscaling_target" "ecs_target" {
 
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
-  count              = "${var.ecs_launch_type == "Fargate" ? 1 : 0}"
+  count              = "${data.aws_partition.current.partition == "aws" ? 1 : 0}"
 }
 
 resource "aws_appautoscaling_target" "ecs_target_ec2" {
@@ -181,5 +181,5 @@ resource "aws_appautoscaling_target" "ecs_target_ec2" {
 
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
-  count              = "${var.ecs_launch_type == "EC2" ? 1 : 0}"
+  count              = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
 }

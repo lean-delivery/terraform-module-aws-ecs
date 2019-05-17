@@ -1,10 +1,10 @@
 output "ecs_service_iam_role_arn" {
-  value       = "${aws_iam_role.ecs-service.arn}"
+  value       = "${data.aws_partition.current.partition == "aws" ? "${element(concat(aws_iam_role.ecs-service.*.arn, list("")), 0)}":"${element(concat(aws_iam_role.ecs-service-ec2.*.arn, list("")), 0)}"}"
   description = "ARN fo created ECS service"
 }
 
 output "ecs_service_iam_role_name" {
-  value       = "${aws_iam_role.ecs-service.name}"
+  value       = "${data.aws_partition.current.partition == "aws" ? "${element(concat(aws_iam_role.ecs-service.*.name, list("")), 0)}":"${element(concat(aws_iam_role.ecs-service-ec2.*.name, list("")), 0)}"}"
   description = "Name of IAM role that attached to ECS service"
 }
 
@@ -29,17 +29,17 @@ output "ecs_task_execution_container_memory" {
 }
 
 output "ecs_cluster_arn" {
-  value       = "${var.ecs_launch_type == "Fargate" ? "${local.ecs_cluster_arn}":"${local.ecs_cluster_arn_ec2}"}"
+  value       = "${local.ecs_cluster_arn}"
   description = "ECS cluster ARN"
 }
 
 output "ecs_cluster_id" {
-  value       = "${var.ecs_launch_type == "Fargate" ? "${local.ecs_cluster_id}":"${local.ecs_cluster_id_ec2}"}"
+  value       = "${local.ecs_cluster_id}"
   description = "ECS cluster ID"
 }
 
 output "ecs_cluster_name" {
-  value       = "${var.ecs_launch_type == "Fargate" ? "${local.ecs_cluster_name}":"${local.ecs_cluster_name_ec2}"}"
+  value       = "${local.ecs_cluster_name}"
   description = "ECS cluster name"
 }
 
