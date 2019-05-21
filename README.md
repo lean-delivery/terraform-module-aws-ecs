@@ -57,7 +57,7 @@ EOF
 | tags | Additional tags for all resources | map | `<map>` | no |
 | task\_role\_arn | ARN of IAM role that should be passed into container to access AWS resources from it. | string | `` | no |
 | use\_existant\_cluster | Bool statement to declare usage of existant ECS cluster | string | `false` | no |
-| instance\_type | Instance type of nodes for ECS with "EC2" launch type  | string | `t2.medium` | no |
+| instance\_type | Instance type of nodes for ECS with "EC2" launch type  | string | `t2.small` | no |
 | vpc\_id | The ID of VPC | string | - | yes |
 
 ### Container definitions default value

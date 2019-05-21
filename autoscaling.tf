@@ -18,8 +18,8 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu-high_ec2" {
-  alarm_name          = "${title(lower(var.project))}-${title(lower(var.environment))}-${title(lower(var.service))}-AutoScalingCPUAlarmHigh"
-  alarm_description   = "Containers CPU Utilization High"
+  alarm_name          = "${title(lower(var.project))}-${title(lower(var.environment))}-${title(lower(var.service))}-AutoScalingCPUAlarmHigh_ec2"
+  alarm_description   = "Node CPU Utilization High"
   metric_name         = "CPUUtilization"
   statistic           = "Average"
   comparison_operator = "GreaterThanOrEqualToThreshold"
@@ -56,8 +56,8 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu-low_ec2" {
-  alarm_name          = "${title(lower(var.project))}-${title(lower(var.environment))}-${title(lower(var.service))}-AutoScalingCPUAlarmLow"
-  alarm_description   = "Containers CPU Utilization Low"
+  alarm_name          = "${title(lower(var.project))}-${title(lower(var.environment))}-${title(lower(var.service))}-AutoScalingCPUAlarmLow_ec2"
+  alarm_description   = "Node CPU Utilization Low"
   metric_name         = "CPUUtilization"
   statistic           = "Average"
   comparison_operator = "LessThanThreshold"
@@ -96,7 +96,7 @@ resource "aws_appautoscaling_policy" "scale_policy_high" {
 }
 
 resource "aws_appautoscaling_policy" "scale_policy_high_ec2" {
-  name               = "${title(lower(var.project))}-${title(lower(var.environment))}-${title(lower(var.service))}-ScalePolicyHigh"
+  name               = "${title(lower(var.project))}-${title(lower(var.environment))}-${title(lower(var.service))}-ScalePolicyHigh_ec2"
   policy_type        = "StepScaling"
   resource_id        = "service/${local.ecs_cluster_name}/${aws_ecs_service.this_ec2.name}"
   scalable_dimension = "ecs:service:DesiredCount"
@@ -138,7 +138,7 @@ resource "aws_appautoscaling_policy" "scale_policy_low" {
 }
 
 resource "aws_appautoscaling_policy" "scale_policy_low_ec2" {
-  name               = "${title(lower(var.project))}-${title(lower(var.environment))}-${title(lower(var.service))}-ScalePolicyLow"
+  name               = "${title(lower(var.project))}-${title(lower(var.environment))}-${title(lower(var.service))}-ScalePolicyLow_ec2"
   policy_type        = "StepScaling"
   resource_id        = "service/${local.ecs_cluster_name}/${aws_ecs_service.this_ec2.name}"
   scalable_dimension = "ecs:service:DesiredCount"

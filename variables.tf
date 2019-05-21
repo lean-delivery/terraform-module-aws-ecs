@@ -113,5 +113,5 @@ variable "key-pair-name" {
 variable "instance_type" {
   description = "ARN of target group"
   type        = "string"
-  default     = "t2.medium"
+  default     = "t2.small"
 }
