@@ -82,11 +82,6 @@ variable "task_role_arn" {
   default     = ""
 }
 
-variable "ecs_launch_type" {
-  description = "ECS launch type (EC2 or FARGATE)"
-  default     = "FARGATE"
-}
-
 variable "tags" {
   type        = "map"
   description = "Additional tags for all resources"
@@ -113,4 +108,10 @@ variable "key-pair-name" {
   description = "key-pair name for ec2"
   type        = "string"
   default     = "ecs-nodes"
+}
+
+variable "instance_type" {
+  description = "ARN of target group"
+  type        = "string"
+  default     = "t2.medium"
 }

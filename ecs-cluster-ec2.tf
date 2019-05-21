@@ -11,7 +11,7 @@ resource "aws_iam_instance_profile" "ecs-instance-profile_ec2" {
 resource "aws_launch_configuration" "ecs-launch-configuration_ec2" {
   name                        = "ecs-launch-configuration"
   image_id                    = "ami-0da0590b87d9022f2"
-  instance_type               = "t2.medium"
+  instance_type               = "${var.instance_type}"
   iam_instance_profile        = "${aws_iam_instance_profile.ecs-instance-profile_ec2.id}"
   key_name                    = "${var.key-pair-name}"
 
