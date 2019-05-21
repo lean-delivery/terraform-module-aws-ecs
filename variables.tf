@@ -106,7 +106,7 @@ variable "subnets" {
 variable "alb_target_group_arn" {
   description = "ARN of target group"
   type        = "string"
-  default     = "None"
+  default     = "none"
 }
 
 variable "key-pair-name" {
