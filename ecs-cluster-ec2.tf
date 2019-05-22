@@ -34,25 +34,6 @@ resource "aws_launch_configuration" "ecs-launch-configuration_ec2" {
   count = "${data.aws_partition.current.partition == "aws-cn" ? "${ var.use_existant_cluster ? 0 : 1 }" : 0}"
 }
 
-resource "aws_autoscaling_group" "ecs-autoscaling-group" {
-  name                        = "ecs-autoscaling-group"
-  max_size                    = "2"
-  min_size                    = "1"
-  desired_capacity            = "1"
-
-  availability_zones = ["cn-north-1a", "cn-north-1b"]
-  vpc_zone_identifier         = ["${var.subnets}"]
-  launch_configuration        = "${aws_launch_configuration.ecs-launch-configuration_ec2.name}"
-  health_check_type           = "ELB"
-
-  tag {
-    key = "Name"
-    value = "${var.project}-${var.environment}"
-    propagate_at_launch = true
-  }
-  count = "${data.aws_partition.current.partition == "aws-cn" ? "${ var.use_existant_cluster ? 0 : 1 }" : 0}"
-}
-
 resource "aws_ecs_task_definition" "this_ec2" {
   family                      = "${var.service}-${var.environment}"
 
