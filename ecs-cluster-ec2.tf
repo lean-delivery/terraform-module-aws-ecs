@@ -34,49 +34,4 @@ resource "aws_launch_configuration" "ecs-launch-configuration_ec2" {
   count = "${data.aws_partition.current.partition == "aws-cn" ? "${ var.use_existant_cluster ? 0 : 1 }" : 0}"
 }
 
-resource "aws_ecs_task_definition" "this_ec2" {
-  family                      = "${var.service}-${var.environment}"
 
-  requires_compatibilities    = ["EC2"]
-#  cpu                        = "${var.container_cpu}"
-#  memory                     = "${var.container_memory}"
-  network_mode                = "awsvpc"
-
-  execution_role_arn          = "${aws_iam_role.ecs-task-execution.arn}"
-  task_role_arn               = "${var.task_role_arn}"
-  container_definitions       = "${var.container_definitions}"
-  tags                        = "${merge(local.default_tags, var.tags)}"
-  count                       = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
-}
-
-data "aws_security_group" "this_ec2" {
-  id = "${module.security-group.this_security_group_id}"
-}
-
-resource "aws_ecs_service" "this_ec2" {
-  name                               = "${var.service}-${var.environment}"
-  cluster                            = "${local.ecs_cluster_id}"
-  task_definition                    = "${aws_ecs_task_definition.this_ec2.arn}"
-  launch_type                        = "EC2"
-  deployment_maximum_percent         = "200"
-  deployment_minimum_healthy_percent = "100"
-
-  desired_count                      = "${var.minimum_service_capacity}"
-  health_check_grace_period_seconds  = "${var.health_check_grace_period_seconds}"
-
-  network_configuration {
-    subnets                          = ["${var.subnets}"]
-    security_groups                  = ["${data.aws_security_group.this_ec2.id}"]
-  }
-
-  load_balancer {
-    target_group_arn                 = "${var.alb_target_group_arn}"
-    container_name                   = "${var.service}-${var.environment}"
-    container_port                   = "${var.container_port}"
-  }
-
-  lifecycle {
-    ignore_changes                   = ["desired_count"]
-  }
-  count                              = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
-}

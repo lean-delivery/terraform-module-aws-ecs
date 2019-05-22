@@ -18,7 +18,7 @@ locals {
 resource "aws_ecs_task_definition" "this" {
   family = "${var.service}-${var.environment}"
 
-  requires_compatibilities = ["FARGATE"]
+  requires_compatibilities = ["${data.aws_partition.current.partition == "aws" ? "FARGATE" : "EC2"}"]
   cpu                      = "${var.container_cpu}"
   memory                   = "${var.container_memory}"
   network_mode             = "awsvpc"
@@ -27,7 +27,6 @@ resource "aws_ecs_task_definition" "this" {
   task_role_arn            = "${var.task_role_arn}"
   container_definitions    = "${var.container_definitions}"
   tags                     = "${merge(local.default_tags, var.tags)}"
-  count                    = "${data.aws_partition.current.partition == "aws" ? 1 : 0}"
 }
 
 data "aws_security_group" "this" {
@@ -38,7 +37,7 @@ resource "aws_ecs_service" "this" {
   name                               = "${var.service}-${var.environment}"
   cluster                            = "${local.ecs_cluster_id}"
   task_definition                    = "${aws_ecs_task_definition.this.arn}"
-  launch_type                        = "FARGATE"
+  launch_type                        = "${data.aws_partition.current.partition == "aws" ? "FARGATE" : "EC2"}"
   deployment_maximum_percent         = "200"
   deployment_minimum_healthy_percent = "100"
 
@@ -59,5 +58,4 @@ resource "aws_ecs_service" "this" {
   lifecycle {
     ignore_changes   = ["desired_count"]
   }
-  count              = "${data.aws_partition.current.partition == "aws" ? 1 : 0}"
 }

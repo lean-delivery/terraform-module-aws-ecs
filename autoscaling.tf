@@ -13,27 +13,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high" {
     ClusterName = "${local.ecs_cluster_name}"
     ServiceName = "${var.service}-${var.environment}"
   }
-  count         = "${data.aws_partition.current.partition == "aws" ? 1 : 0}"
   alarm_actions = ["${aws_appautoscaling_policy.scale_policy_high.arn}"]
-}
-
-resource "aws_cloudwatch_metric_alarm" "cpu-high_ec2" {
-  alarm_name          = "${title(lower(var.project))}-${title(lower(var.environment))}-${title(lower(var.service))}-AutoScalingCPUUtilizationHigh_ec2"
-  alarm_description   = "Node CPU Utilization High"
-  metric_name         = "CPUUtilization"
-  statistic           = "Average"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = "1"
-  namespace           = "AWS/ECS"
-  period              = "60"
-  threshold           = "50"
-
-  dimensions {
-    ClusterName = "${local.ecs_cluster_name}"
-    ServiceName = "${var.service}-${var.environment}"
-  }
-  count         = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
-  alarm_actions = ["${aws_autoscaling_policy.scale_policy_high_ec2.arn}"]
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu-low" {
@@ -51,8 +31,25 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low" {
     ClusterName = "${local.ecs_cluster_name}"
     ServiceName = "${var.service}-${var.environment}"
   }
-  count         = "${data.aws_partition.current.partition == "aws" ? 1 : 0}"
   alarm_actions = ["${aws_appautoscaling_policy.scale_policy_low.arn}"]
+}
+
+resource "aws_cloudwatch_metric_alarm" "cpu-high_ec2" {
+  alarm_name          = "${title(lower(var.project))}-${title(lower(var.environment))}-${title(lower(var.service))}-AutoScalingCPUUtilizationHigh_ec2"
+  alarm_description   = "Node CPU Utilization High"
+  metric_name         = "CPUUtilization"
+  statistic           = "Average"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "1"
+  namespace           = "AWS/EC2"
+  period              = "60"
+  threshold           = "70"
+
+  dimensions {
+    AutoScalingGroupName = "${aws_autoscaling_group.ecs-autoscaling-group.name}"
+  }
+  count         = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
+  alarm_actions = ["${aws_autoscaling_policy.scale_policy_high_ec2.arn}"]
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu-low_ec2" {
@@ -62,13 +59,12 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low_ec2" {
   statistic           = "Average"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = "2"
-  namespace           = "AWS/ECS"
+  namespace           = "AWS/EC2"
   period              = "60"
-  threshold           = "50"
+  threshold           = "35"
 
   dimensions {
-    ClusterName = "${local.ecs_cluster_name}"
-    ServiceName = "${var.service}-${var.environment}"
+    AutoScalingGroupName = "${aws_autoscaling_group.ecs-autoscaling-group.name}"
   }
   count      = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
   alarm_actions = ["${aws_autoscaling_policy.scale_policy_low_ec2.arn}"]
@@ -91,7 +87,6 @@ resource "aws_appautoscaling_policy" "scale_policy_high" {
       scaling_adjustment          = 1
     }
   }
-  count      = "${data.aws_partition.current.partition == "aws" ? 1 : 0}"
   depends_on = ["aws_appautoscaling_target.ecs_target"]
 }
 
@@ -112,8 +107,19 @@ resource "aws_appautoscaling_policy" "scale_policy_low" {
       scaling_adjustment          = -1
     }
   }
-  count      = "${data.aws_partition.current.partition == "aws" ? 1 : 0}"
   depends_on = ["aws_appautoscaling_target.ecs_target"]
+}
+
+resource "aws_appautoscaling_target" "ecs_target" {
+  max_capacity = 10
+  min_capacity = 1
+  resource_id  = "service/${local.ecs_cluster_name}/${aws_ecs_service.this.name}"
+
+  ### https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-service-linked-roles.html
+  # role_arn           = "${aws_iam_role.service-autoscaling.arn}"
+
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
 }
 
 resource "aws_autoscaling_policy" "scale_policy_high_ec2" {
@@ -151,17 +157,4 @@ resource "aws_autoscaling_group" "ecs-autoscaling-group" {
     propagate_at_launch = true
   }
   count = "${data.aws_partition.current.partition == "aws-cn" ? "${ var.use_existant_cluster ? 0 : 1 }" : 0}"
-}
-
-resource "aws_appautoscaling_target" "ecs_target" {
-  max_capacity = 10
-  min_capacity = 1
-  resource_id  = "service/${local.ecs_cluster_name}/${aws_ecs_service.this.name}"
-
-  ### https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-service-linked-roles.html
-  # role_arn           = "${aws_iam_role.service-autoscaling.arn}"
-
-  scalable_dimension = "ecs:service:DesiredCount"
-  service_namespace  = "ecs"
-  count              = "${data.aws_partition.current.partition == "aws" ? 1 : 0}"
 }
