@@ -1,15 +1,15 @@
 resource "aws_iam_instance_profile" "ecs-instance-profile_ec2" {
-  name = "ecs-instance-profile"
+  name = "${var.service}-instance-profile"
   path = "/"
   role = "${aws_iam_role.ecs-service-ec2.id}"
   provisioner "local-exec" {
     command = "sleep 60"
   }
-  count = "${data.aws_partition.current.partition == "aws-cn" ? "${ var.use_existant_cluster ? 0 : 1 }" : 0}"
+  count = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
 }
 
-resource "aws_launch_configuration" "ecs-launch-configuration_ec2" {
-  name                        = "ecs-launch-configuration"
+resource "aws_launch_configuration" "launch-configuration_ec2" {
+  name                        = "${var.service}-launch-configuration"
   image_id                    = "ami-0da0590b87d9022f2"
   instance_type               = "${var.instance_type}"
   iam_instance_profile        = "${aws_iam_instance_profile.ecs-instance-profile_ec2.id}"
@@ -31,7 +31,8 @@ resource "aws_launch_configuration" "ecs-launch-configuration_ec2" {
       echo "ECS_CLUSTER=${local.ecs_cluster_name}" >> /etc/ecs/ecs.config
       start ecs
       EOF
-  count = "${data.aws_partition.current.partition == "aws-cn" ? "${ var.use_existant_cluster ? 0 : 1 }" : 0}"
+  count = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
 }
+
 
 

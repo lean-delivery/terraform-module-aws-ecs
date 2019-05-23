@@ -43,12 +43,12 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high_ec2" {
   evaluation_periods  = "1"
   namespace           = "AWS/EC2"
   period              = "60"
-  threshold           = "70"
+  threshold           = "40"
 
   dimensions {
-    AutoScalingGroupName = "${aws_autoscaling_group.ecs-autoscaling-group.name}"
+    AutoScalingGroupName = "${aws_autoscaling_group.autoscaling-group.name}"
   }
-  count         = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
+  count = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
   alarm_actions = ["${aws_autoscaling_policy.scale_policy_high_ec2.arn}"]
 }
 
@@ -61,12 +61,12 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low_ec2" {
   evaluation_periods  = "2"
   namespace           = "AWS/EC2"
   period              = "60"
-  threshold           = "35"
+  threshold           = "40"
 
   dimensions {
-    AutoScalingGroupName = "${aws_autoscaling_group.ecs-autoscaling-group.name}"
+    AutoScalingGroupName = "${aws_autoscaling_group.autoscaling-group.name}"
   }
-  count      = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
+  count = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
   alarm_actions = ["${aws_autoscaling_policy.scale_policy_low_ec2.arn}"]
 }
 
@@ -127,8 +127,8 @@ resource "aws_autoscaling_policy" "scale_policy_high_ec2" {
   scaling_adjustment     = 1
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 300
-  autoscaling_group_name = "${aws_autoscaling_group.ecs-autoscaling-group.name}"
-  count = "${data.aws_partition.current.partition == "aws-cn" ? "${ var.use_existant_cluster ? 0 : 1 }" : 0}"
+  autoscaling_group_name = "${aws_autoscaling_group.autoscaling-group.name}"
+  count = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
 }
 
 resource "aws_autoscaling_policy" "scale_policy_low_ec2" {
@@ -136,19 +136,19 @@ resource "aws_autoscaling_policy" "scale_policy_low_ec2" {
   scaling_adjustment     = -1
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 300
-  autoscaling_group_name = "${aws_autoscaling_group.ecs-autoscaling-group.name}"
-  count = "${data.aws_partition.current.partition == "aws-cn" ? "${ var.use_existant_cluster ? 0 : 1 }" : 0}"
+  autoscaling_group_name = "${aws_autoscaling_group.autoscaling-group.name}"
+  count = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
 }
 
-resource "aws_autoscaling_group" "ecs-autoscaling-group" {
-  name                        = "ecs-autoscaling-group"
+resource "aws_autoscaling_group" "autoscaling-group" {
+  name                        = "${var.service}-autoscaling-group"
   max_size                    = "3"
   min_size                    = "1"
   desired_capacity            = "1"
 
   availability_zones = ["cn-north-1a", "cn-north-1b"]
   vpc_zone_identifier         = ["${var.subnets}"]
-  launch_configuration        = "${aws_launch_configuration.ecs-launch-configuration_ec2.name}"
+  launch_configuration        = "${aws_launch_configuration.launch-configuration_ec2.name}"
   health_check_type           = "ELB"
 
   tag {
@@ -156,5 +156,7 @@ resource "aws_autoscaling_group" "ecs-autoscaling-group" {
     value = "${var.project}-${var.environment}"
     propagate_at_launch = true
   }
-  count = "${data.aws_partition.current.partition == "aws-cn" ? "${ var.use_existant_cluster ? 0 : 1 }" : 0}"
+  count = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
 }
+
+
