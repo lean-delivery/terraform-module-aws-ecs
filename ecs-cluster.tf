@@ -5,7 +5,7 @@ resource "aws_ecs_cluster" "this" {
 }
 
 data "aws_ecs_cluster" "this" {
-  count = "${var.use_existant_cluster ? 1 : 0 }"
+  count        = "${var.use_existant_cluster ? 1 : 0 }"
   cluster_name = "${var.ecs_cluster_name == "none" ? "${var.project}-${var.environment}" : var.ecs_cluster_name}"
 }
 
@@ -23,10 +23,10 @@ resource "aws_ecs_task_definition" "this" {
   memory                   = "${var.container_memory}"
   network_mode             = "awsvpc"
 
-  execution_role_arn       = "${aws_iam_role.ecs-task-execution.arn}"
-  task_role_arn            = "${var.task_role_arn}"
-  container_definitions    = "${var.container_definitions}"
-  tags                     = "${merge(local.default_tags, var.tags)}"
+  execution_role_arn    = "${aws_iam_role.ecs-task-execution.arn}"
+  task_role_arn         = "${var.task_role_arn}"
+  container_definitions = "${var.container_definitions}"
+  tags                  = "${merge(local.default_tags, var.tags)}"
 }
 
 data "aws_security_group" "this" {
@@ -45,8 +45,8 @@ resource "aws_ecs_service" "this" {
   health_check_grace_period_seconds = "${var.health_check_grace_period_seconds}"
 
   network_configuration {
-    subnets          = ["${var.subnets}"]
-    security_groups  = ["${data.aws_security_group.this.id}"]
+    subnets         = ["${var.subnets}"]
+    security_groups = ["${data.aws_security_group.this.id}"]
   }
 
   load_balancer {
@@ -56,6 +56,6 @@ resource "aws_ecs_service" "this" {
   }
 
   lifecycle {
-    ignore_changes   = ["desired_count"]
+    ignore_changes = ["desired_count"]
   }
 }

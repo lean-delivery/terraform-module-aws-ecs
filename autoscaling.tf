@@ -13,6 +13,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high" {
     ClusterName = "${local.ecs_cluster_name}"
     ServiceName = "${var.service}-${var.environment}"
   }
+
   alarm_actions = ["${aws_appautoscaling_policy.scale_policy_high.arn}"]
 }
 
@@ -31,6 +32,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low" {
     ClusterName = "${local.ecs_cluster_name}"
     ServiceName = "${var.service}-${var.environment}"
   }
+
   alarm_actions = ["${aws_appautoscaling_policy.scale_policy_low.arn}"]
 }
 
@@ -48,7 +50,8 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high_ec2" {
   dimensions {
     AutoScalingGroupName = "${aws_autoscaling_group.autoscaling-group.name}"
   }
-  count = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
+
+  count         = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
   alarm_actions = ["${aws_autoscaling_policy.scale_policy_high_ec2.arn}"]
 }
 
@@ -66,7 +69,8 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low_ec2" {
   dimensions {
     AutoScalingGroupName = "${aws_autoscaling_group.autoscaling-group.name}"
   }
-  count = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
+
+  count         = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
   alarm_actions = ["${aws_autoscaling_policy.scale_policy_low_ec2.arn}"]
 }
 
@@ -87,6 +91,7 @@ resource "aws_appautoscaling_policy" "scale_policy_high" {
       scaling_adjustment          = 1
     }
   }
+
   depends_on = ["aws_appautoscaling_target.ecs_target"]
 }
 
@@ -107,6 +112,7 @@ resource "aws_appautoscaling_policy" "scale_policy_low" {
       scaling_adjustment          = -1
     }
   }
+
   depends_on = ["aws_appautoscaling_target.ecs_target"]
 }
 
@@ -128,7 +134,7 @@ resource "aws_autoscaling_policy" "scale_policy_high_ec2" {
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 300
   autoscaling_group_name = "${aws_autoscaling_group.autoscaling-group.name}"
-  count = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
+  count                  = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
 }
 
 resource "aws_autoscaling_policy" "scale_policy_low_ec2" {
@@ -137,26 +143,25 @@ resource "aws_autoscaling_policy" "scale_policy_low_ec2" {
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 300
   autoscaling_group_name = "${aws_autoscaling_group.autoscaling-group.name}"
-  count = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
+  count                  = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
 }
 
 resource "aws_autoscaling_group" "autoscaling-group" {
-  name                        = "${var.service}-autoscaling-group"
-  max_size                    = "3"
-  min_size                    = "1"
-  desired_capacity            = "1"
+  name             = "${var.service}-autoscaling-group"
+  max_size         = "3"
+  min_size         = "1"
+  desired_capacity = "1"
 
-  availability_zones = ["cn-north-1a", "cn-north-1b"]
-  vpc_zone_identifier         = ["${var.subnets}"]
-  launch_configuration        = "${aws_launch_configuration.launch-configuration_ec2.name}"
-  health_check_type           = "ELB"
+  availability_zones   = ["cn-north-1a", "cn-north-1b"]
+  vpc_zone_identifier  = ["${var.subnets}"]
+  launch_configuration = "${aws_launch_configuration.launch-configuration_ec2.name}"
+  health_check_type    = "ELB"
 
   tag {
-    key = "Name"
-    value = "${var.project}-${var.environment}"
+    key                 = "Name"
+    value               = "${var.project}-${var.environment}"
     propagate_at_launch = true
   }
+
   count = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
 }
-
-
