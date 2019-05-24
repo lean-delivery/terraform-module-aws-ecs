@@ -25,7 +25,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low" {
   evaluation_periods  = "2"
   namespace           = "AWS/ECS"
   period              = "60"
-  threshold           = "50"
+  threshold           = "40"
 
   dimensions {
     ClusterName = "${local.ecs_cluster_name}"
