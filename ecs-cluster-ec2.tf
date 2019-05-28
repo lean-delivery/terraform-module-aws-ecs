@@ -7,7 +7,7 @@ resource "aws_iam_instance_profile" "ecs-instance-profile_ec2" {
     command = "sleep 60"
   }
 
-  count = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
+  count = "${var.launch_type == "FARGATE" ? 0 : 1}"
 }
 
 resource "aws_launch_configuration" "launch-configuration_ec2" {
@@ -35,5 +35,5 @@ resource "aws_launch_configuration" "launch-configuration_ec2" {
       start ecs
       EOF
 
-  count = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
+  count = "${var.launch_type == "FARGATE" ? 0 : 1}"
 }

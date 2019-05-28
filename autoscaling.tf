@@ -51,7 +51,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high_ec2" {
     AutoScalingGroupName = "${aws_autoscaling_group.autoscaling-group.name}"
   }
 
-  count         = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
+  count         = "${var.launch_type == "FARGATE" ? 0 : 1}"
   alarm_actions = ["${aws_autoscaling_policy.scale_policy_high_ec2.arn}"]
 }
 
@@ -70,7 +70,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low_ec2" {
     AutoScalingGroupName = "${aws_autoscaling_group.autoscaling-group.name}"
   }
 
-  count         = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
+  count         = "${var.launch_type == "FARGATE" ? 0 : 1}"
   alarm_actions = ["${aws_autoscaling_policy.scale_policy_low_ec2.arn}"]
 }
 
@@ -134,7 +134,7 @@ resource "aws_autoscaling_policy" "scale_policy_high_ec2" {
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 300
   autoscaling_group_name = "${aws_autoscaling_group.autoscaling-group.name}"
-  count                  = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
+  count                  = "${var.launch_type == "FARGATE" ? 0 : 1}"
 }
 
 resource "aws_autoscaling_policy" "scale_policy_low_ec2" {
@@ -143,7 +143,7 @@ resource "aws_autoscaling_policy" "scale_policy_low_ec2" {
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 300
   autoscaling_group_name = "${aws_autoscaling_group.autoscaling-group.name}"
-  count                  = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
+  count                  = "${var.launch_type == "FARGATE" ? 0 : 1}"
 }
 
 resource "aws_autoscaling_group" "autoscaling-group" {
@@ -163,5 +163,5 @@ resource "aws_autoscaling_group" "autoscaling-group" {
     propagate_at_launch = true
   }
 
-  count = "${data.aws_partition.current.partition == "aws-cn" ? 1 : 0}"
+  count = "${var.launch_type == "FARGATE" ? 0 : 1}"
 }

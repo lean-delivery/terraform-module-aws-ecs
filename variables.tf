@@ -115,3 +115,9 @@ variable "instance_type" {
   type        = "string"
   default     = "t2.small"
 }
+
+variable "launch_type" {
+  description = "Launch type for ECS"
+  type        = "string"
+  default     = "FARGATE"
+}

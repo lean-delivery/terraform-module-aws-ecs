@@ -1,6 +1,8 @@
 # Summary
 
-Terraform module to setup ECS Fargate or ECS EC2 on China AWS region.
+Terraform module to setup ECS Fargate or ECS EC2.
+
+New variable "launch_type" can be "FARGATE" or "EC2"
 
 ## Example
 
