@@ -1,3 +1,23 @@
+data "aws_ami" "ecs_optimized_ami" {
+  most_recent      = true
+  owners           = ["amazon"]
+
+  filter {
+    name = "name"
+    values = ["amzn2-ami-ecs-*"]
+  }
+
+  filter {
+    name = "root-device-type"
+    values = ["ebs"]
+  }
+
+  filter {
+    name = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
 resource "aws_iam_instance_profile" "ecs-instance-profile_ec2" {
   name = "${var.service}-instance-profile"
   path = "/"
@@ -12,14 +32,14 @@ resource "aws_iam_instance_profile" "ecs-instance-profile_ec2" {
 
 resource "aws_launch_configuration" "launch-configuration_ec2" {
   name                 = "${var.service}-launch-configuration"
-  image_id             = "ami-0da0590b87d9022f2"
+  image_id             = "${data.aws_ami.ecs_optimized_ami.id}"
   instance_type        = "${var.instance_type}"
   iam_instance_profile = "${aws_iam_instance_profile.ecs-instance-profile_ec2.id}"
   key_name             = "${var.key-pair-name}"
 
   root_block_device {
-    volume_type           = "standard"
-    volume_size           = 100
+    volume_type           = "${var.volume_type}"
+    volume_size           = "${var.volume_size}"
     delete_on_termination = true
   }
 

@@ -117,7 +117,18 @@ variable "instance_type" {
 }
 
 variable "launch_type" {
-  description = "Launch type for ECS"
+  description = "Launch type for ECS [ FARGATE | EC2 ]"
   type        = "string"
   default     = "FARGATE"
+}
+
+variable "volume_type" {
+  description = "Volume type for EC2"
+  type        = "string"
+  default     = "standard"
+}
+
+variable "volume_size" {
+  description = "Volume size for EC2"
+  default     = "100"
 }
