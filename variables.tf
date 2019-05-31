@@ -132,3 +132,8 @@ variable "volume_size" {
   description = "Volume size for EC2"
   default     = "100"
 }
+
+variable "availability_zones" {
+  description = "List of availability zones which will be provisined by autoscailing group"
+  type        = "list"
+}

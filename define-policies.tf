@@ -81,7 +81,7 @@ resource "aws_iam_role" "ecs-service-ec2" {
     {
       "Action": "sts:AssumeRole",
       "Principal": {
-        "Service": "ec2.amazonaws.com.cn"
+        "Service": "ec2.amazonaws.com${data.aws_partition.current.partition == "aws-cn" ? ".cn" : "" }"
       },
       "Effect": "Allow",
       "Sid": ""
@@ -95,13 +95,13 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "this_ec2" {
-  policy_arn = "arn:aws-cn:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
   role       = "${aws_iam_role.ecs-service-ec2.name}"
   count      = "${var.launch_type == "FARGATE" ? 0 : 1}"
 }
 
 resource "aws_iam_role_policy_attachment" "this_default_ecs_ec2" {
-  policy_arn = "arn:aws-cn:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
   role       = "${aws_iam_role.ecs-service-ec2.name}"
   count      = "${var.launch_type == "FARGATE" ? 0 : 1}"
 }
