@@ -1,10 +1,10 @@
 output "ecs_service_iam_role_arn" {
-  value       = "${aws_iam_role.ecs-service.arn}"
+ value = "${element(concat(aws_iam_role.ecs-service.*.arn, aws_iam_role.ecs-service-ec2.*.arn, list("")), 0)}"
   description = "ARN fo created ECS service"
 }
 
 output "ecs_service_iam_role_name" {
-  value       = "${aws_iam_role.ecs-service.name}"
+  value = "${element(concat(aws_iam_role.ecs-service.*.name, aws_iam_role.ecs-service-ec2.*.name, list("")), 0)}"
   description = "Name of IAM role that attached to ECS service"
 }
 
@@ -67,3 +67,4 @@ output "security_group_vpc_id" {
   description = "The VPC ID."
   value       = "${module.security-group.this_security_group_vpc_id}"
 }
+

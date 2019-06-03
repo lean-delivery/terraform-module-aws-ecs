@@ -1,12 +1,12 @@
 resource "aws_ecs_cluster" "this" {
-  count = "${ var.use_existant_cluster ? 0 : 1 }"
+  count = "${var.use_existant_cluster ? 0 : 1 }"
   name  = "${var.project}-${var.environment}"
   tags  = "${merge(local.default_tags, var.tags)}"
 }
 
 data "aws_ecs_cluster" "this" {
-  count        = "${ var.use_existant_cluster ? 1 : 0 }"
-  cluster_name = "${var.ecs_cluster_name}"
+  count        = "${var.use_existant_cluster ? 1 : 0 }"
+  cluster_name = "${var.ecs_cluster_name == "none" ? "${var.project}-${var.environment}" : var.ecs_cluster_name}"
 }
 
 locals {
@@ -18,7 +18,7 @@ locals {
 resource "aws_ecs_task_definition" "this" {
   family = "${var.service}-${var.environment}"
 
-  requires_compatibilities = ["FARGATE"]
+  requires_compatibilities = ["${var.launch_type == "FARGATE" ? "FARGATE" : "EC2"}"]
   cpu                      = "${var.container_cpu}"
   memory                   = "${var.container_memory}"
   network_mode             = "awsvpc"
@@ -37,7 +37,7 @@ resource "aws_ecs_service" "this" {
   name                               = "${var.service}-${var.environment}"
   cluster                            = "${local.ecs_cluster_id}"
   task_definition                    = "${aws_ecs_task_definition.this.arn}"
-  launch_type                        = "FARGATE"
+  launch_type                        = "${var.launch_type}"
   deployment_maximum_percent         = "200"
   deployment_minimum_healthy_percent = "100"
 

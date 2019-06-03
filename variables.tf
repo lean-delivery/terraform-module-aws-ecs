@@ -101,4 +101,39 @@ variable "subnets" {
 variable "alb_target_group_arn" {
   description = "ARN of target group"
   type        = "string"
+  default     = "none"
+}
+
+variable "key-pair-name" {
+  description = "key-pair name for ec2"
+  type        = "string"
+  default     = "ecs-nodes"
+}
+
+variable "instance_type" {
+  description = "ARN of target group"
+  type        = "string"
+  default     = "t2.small"
+}
+
+variable "launch_type" {
+  description = "Launch type for ECS [ FARGATE | EC2 ]"
+  type        = "string"
+  default     = "FARGATE"
+}
+
+variable "volume_type" {
+  description = "Volume type for EC2"
+  type        = "string"
+  default     = "standard"
+}
+
+variable "volume_size" {
+  description = "Volume size for EC2"
+  default     = "100"
+}
+
+variable "availability_zones" {
+  description = "List of availability zones which will be provisined by autoscailing group"
+  type        = "list"
 }

@@ -67,17 +67,67 @@ resource "aws_iam_role" "ecs-service" {
 }
 EOF
 
-  tags = "${merge(local.default_tags, var.tags)}"
+  count = "${var.launch_type == "FARGATE" ? 1 : 0}"
+  tags  = "${merge(local.default_tags, var.tags)}"
+}
+
+resource "aws_iam_role" "ecs-service-ec2" {
+  name = "ecs-service-ec2-${var.project}-${var.service}-${var.environment}"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com${data.aws_partition.current.partition == "aws-cn" ? ".cn" : "" }"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+
+  count = "${var.launch_type == "FARGATE" ? 0 : 1}"
+  tags  = "${merge(local.default_tags, var.tags)}"
+}
+
+resource "aws_iam_role_policy_attachment" "this_ec2" {
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+  role       = "${aws_iam_role.ecs-service-ec2.name}"
+  count      = "${var.launch_type == "FARGATE" ? 0 : 1}"
+}
+
+resource "aws_iam_role_policy_attachment" "this_default_ecs_ec2" {
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
+  role       = "${aws_iam_role.ecs-service-ec2.name}"
+  count      = "${var.launch_type == "FARGATE" ? 0 : 1}"
+}
+
+resource "aws_iam_role_policy_attachment" "attach-allow-ec2_ec2" {
+  role       = "${aws_iam_role.ecs-service-ec2.name}"
+  policy_arn = "${aws_iam_policy.ecs-service-allow-ec2.arn}"
+  count      = "${var.launch_type == "FARGATE" ? 0 : 1}"
+}
+
+resource "aws_iam_role_policy_attachment" "attach-allow-elb_ec2" {
+  role       = "${aws_iam_role.ecs-service-ec2.name}"
+  policy_arn = "${aws_iam_policy.ecs-service-allow-elb.arn}"
+  count      = "${var.launch_type == "FARGATE" ? 0 : 1}"
 }
 
 resource "aws_iam_role_policy_attachment" "attach-allow-ec2" {
   role       = "${aws_iam_role.ecs-service.name}"
   policy_arn = "${aws_iam_policy.ecs-service-allow-ec2.arn}"
+  count      = "${var.launch_type == "FARGATE" ? 1 : 0}"
 }
 
 resource "aws_iam_role_policy_attachment" "attach-allow-elb" {
   role       = "${aws_iam_role.ecs-service.name}"
   policy_arn = "${aws_iam_policy.ecs-service-allow-elb.arn}"
+  count      = "${var.launch_type == "FARGATE" ? 1 : 0}"
 }
 
 # data "aws_iam_role" "ecs-task-execution" {
