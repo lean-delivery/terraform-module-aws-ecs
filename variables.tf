@@ -137,3 +137,13 @@ variable "availability_zones" {
   description = "List of availability zones which will be provisined by autoscailing group"
   type        = "list"
 }
+
+variable "min_taks_count" {
+  description = "Amount of min running task count"
+  default     = "1"
+}
+
+variable "max_taks_count" {
+  description = "Amount of max running task count"
+  default     = "10"
+}
