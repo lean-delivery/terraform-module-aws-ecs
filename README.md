@@ -65,8 +65,8 @@ EOF
 | launch\_type | Launch type for ECS (FARGATE or EC2 )  | string | `FARGATE` | no |
 | volume\_type | Volume type for EC2  | string | `standard` | no |
 | volume\_size | Volume size for EC2  | string | `100` | no |
-| min\_taks\_count | Amount of min running task count  | string | `1` | no |
-| max\_taks\_count | Amount of max running task count  | string | `10` | no |
+| min\_task\_count | Amount of min running task count  | string | `1` | no |
+| max\_task\_count | Amount of max running task count  | string | `10` | no |
 | availability\_zones | List of availability zones which will be provisined by autoscailing group  | list | `[]` | yes |
 | vpc\_id | The ID of VPC | string | - | yes |
 

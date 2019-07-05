@@ -117,8 +117,8 @@ resource "aws_appautoscaling_policy" "scale_policy_low" {
 }
 
 resource "aws_appautoscaling_target" "ecs_target" {
-  max_capacity = "${var.max_taks_count}"
-  min_capacity = "${var.min_taks_count}"
+  max_capacity = "${var.max_task_count}"
+  min_capacity = "${var.min_task_count}"
   resource_id  = "service/${local.ecs_cluster_name}/${aws_ecs_service.this.name}"
 
   ### https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-service-linked-roles.html

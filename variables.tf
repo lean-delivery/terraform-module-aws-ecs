@@ -138,12 +138,12 @@ variable "availability_zones" {
   type        = "list"
 }
 
-variable "min_taks_count" {
+variable "min_task_count" {
   description = "Amount of min running task count"
   default     = "1"
 }
 
-variable "max_taks_count" {
+variable "max_task_count" {
   description = "Amount of max running task count"
   default     = "10"
 }
