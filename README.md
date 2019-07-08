@@ -65,7 +65,7 @@ EOF
 | volume\_type | Volume type for EC2  | string | `standard` | no |
 | volume\_size | Volume size for EC2  | string | `100` | no |
 | autoscaling\_min\_capacity | Amount of min running task or EC2 instances | string | `1` | no |
-| autoscaling\_max\_capacity | Amount of min running task or EC2 instances  | string | `10` | no |
+| autoscaling\_max\_capacity | Amount of max running task or EC2 instances  | string | `10` | no |
 | autoscaling\_cpu\_high\_threshold | Autoscaling CPU threshold for scale-up  | string | `40` | no |
 | autoscaling\_cpu\_low\_threshold | Autoscaling CPU threshold for scale-down  | string | `40` | no |
 | availability\_zones | List of availability zones which will be provisined by autoscailing group  | list | `[]` | yes |

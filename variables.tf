@@ -139,7 +139,7 @@ variable "autoscaling_min_capacity" {
 }
 
 variable "autoscaling_max_capacity" {
-  description = "Amount of min running task or EC2 instances"
+  description = "Amount of max running task or EC2 instances"
   default     = "10"
 }
 
