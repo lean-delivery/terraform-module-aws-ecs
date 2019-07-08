@@ -45,11 +45,6 @@ variable "container_memory" {
   default     = "1024"
 }
 
-variable "minimum_service_capacity" {
-  description = "The number of instances of the task definition to place and keep running"
-  default     = "1"
-}
-
 variable "health_check_grace_period_seconds" {
   description = "Seconds to ignore failing load balancer health checks on newly instantiated tasks to prevent premature shutdown"
   default     = "30"
@@ -138,47 +133,27 @@ variable "availability_zones" {
   type        = "list"
 }
 
-variable "autoscaling_min_task_count" {
-  description = "Amount of min running task count for fargate"
+variable "autoscaling_min_capacity" {
+  description = "Amount of min running task or EC2 instances"
   default     = "1"
 }
 
-variable "autoscaling_max_task_count" {
-  description = "Amount of max running task count for fargate"
+variable "autoscaling_max_capacity" {
+  description = "Amount of min running task or EC2 instances"
   default     = "10"
 }
 
-variable "autoscaling_min_ec2_count" {
-  description = "Amount of min running EC2 instances"
+variable "autoscaling_desired_capacity" {
+  description = "The number of instances or tasks to place and keep running"
   default     = "1"
 }
 
-variable "autoscaling_max_ec2_count" {
-  description = "Amount of max running EC2 instances"
-  default     = "3"
-}
-
-variable "autoscaling_ec2_desired_capacity" {
-  description = "EC2 instances desired capacity"
-  default     = "1"
-}
-
-variable "autoscaling_ec2_cpu_high_threshold" {
-  description = "EС2 autoscaling CPU threshold for scale-up"
+variable "autoscaling_cpu_high_threshold" {
+  description = "Autoscaling CPU threshold for scale-up"
   default     = "40"
 }
 
-variable "autoscaling_ec2_cpu_low_threshold" {
-  description = "EС2 autoscaling CPU threshold for scale-down"
+variable "autoscaling_cpu_low_threshold" {
+  description = "Autoscaling CPU threshold for scale-down"
   default     = "40"
-}
-
-variable "autoscaling_fargate_cpu_low_threshold" {
-  description = "Fargate autoscaling CPU threshold for scale-down"
-  default     = "40"
-}
-
-variable "autoscaling_fargate_cpu_high_threshold" {
-  description = "Fargate autoscaling CPU threshold for scale-up"
-  default     = "50"
 }

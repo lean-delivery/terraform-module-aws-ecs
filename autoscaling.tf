@@ -7,7 +7,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high" {
   evaluation_periods  = "1"
   namespace           = "AWS/ECS"
   period              = "60"
-  threshold           = "${var.autoscaling_fargate_cpu_high_threshold}"
+  threshold           = "${var.autoscaling_cpu_high_threshold}"
 
   dimensions {
     ClusterName = "${local.ecs_cluster_name}"
@@ -26,7 +26,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low" {
   evaluation_periods  = "2"
   namespace           = "AWS/ECS"
   period              = "60"
-  threshold           = "${var.autoscaling_fargate_cpu_low_threshold}"
+  threshold           = "${var.autoscaling_cpu_low_threshold}"
 
   dimensions {
     ClusterName = "${local.ecs_cluster_name}"
@@ -45,7 +45,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high_ec2" {
   evaluation_periods  = "1"
   namespace           = "AWS/EC2"
   period              = "60"
-  threshold           = "${var.autoscaling_ec2_cpu_high_threshold}"
+  threshold           = "${var.autoscaling_cpu_high_threshold}"
 
   dimensions {
     AutoScalingGroupName = "${aws_autoscaling_group.autoscaling-group.name}"
@@ -64,7 +64,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low_ec2" {
   evaluation_periods  = "2"
   namespace           = "AWS/EC2"
   period              = "60"
-  threshold           = "${var.autoscaling_ec2_cpu_low_threshold}"
+  threshold           = "${var.autoscaling_cpu_low_threshold}"
 
   dimensions {
     AutoScalingGroupName = "${aws_autoscaling_group.autoscaling-group.name}"
@@ -117,8 +117,8 @@ resource "aws_appautoscaling_policy" "scale_policy_low" {
 }
 
 resource "aws_appautoscaling_target" "ecs_target" {
-  max_capacity = "${var.autoscaling_max_task_count}"
-  min_capacity = "${var.autoscaling_min_task_count}"
+  max_capacity = "${var.autoscaling_max_capacity}"
+  min_capacity = "${var.autoscaling_min_capacity}"
   resource_id  = "service/${local.ecs_cluster_name}/${aws_ecs_service.this.name}"
 
   ### https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-service-linked-roles.html
@@ -148,9 +148,9 @@ resource "aws_autoscaling_policy" "scale_policy_low_ec2" {
 
 resource "aws_autoscaling_group" "autoscaling-group" {
   name             = "${var.service}-autoscaling-group"
-  max_size         = "${var.autoscaling_max_ec2_count}"
-  min_size         = "${var.autoscaling_min_ec2_count}"
-  desired_capacity = "${var.autoscaling_ec2_desired_capacity}"
+  max_size         = "${var.autoscaling_max_capacity}"
+  min_size         = "${var.autoscaling_min_capacity}"
+  desired_capacity = "${var.autoscaling_desired_capacity}"
 
   availability_zones   = ["${var.availability_zones}"]
   vpc_zone_identifier  = ["${var.subnets}"]
