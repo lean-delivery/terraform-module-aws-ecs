@@ -111,7 +111,7 @@ variable "key-pair-name" {
 }
 
 variable "instance_type" {
-  description = "ARN of target group"
+  description = "EC2 instance type"
   type        = "string"
   default     = "t2.small"
 }
@@ -138,12 +138,47 @@ variable "availability_zones" {
   type        = "list"
 }
 
-variable "min_task_count" {
-  description = "Amount of min running task count"
+variable "autoscaling_min_task_count" {
+  description = "Amount of min running task count for fargate"
   default     = "1"
 }
 
-variable "max_task_count" {
-  description = "Amount of max running task count"
+variable "autoscaling_max_task_count" {
+  description = "Amount of max running task count for fargate"
   default     = "10"
+}
+
+variable "autoscaling_min_ec2_count" {
+  description = "Amount of min running EC2 instances"
+  default     = "1"
+}
+
+variable "autoscaling_max_ec2_count" {
+  description = "Amount of max running EC2 instances"
+  default     = "3"
+}
+
+variable "autoscaling_ec2_desired_capacity" {
+  description = "EC2 instances desired capacity"
+  default     = "1"
+}
+
+variable "autoscaling_ec2_cpu_high_threshold" {
+  description = "EС2 autoscaling CPU threshold for scale-up"
+  default     = "40"
+}
+
+variable "autoscaling_ec2_cpu_low_threshold" {
+  description = "EС2 autoscaling CPU threshold for scale-down"
+  default     = "40"
+}
+
+variable "autoscaling_fargate_cpu_low_threshold" {
+  description = "Fargate autoscaling CPU threshold for scale-down"
+  default     = "40"
+}
+
+variable "autoscaling_fargate_cpu_high_threshold" {
+  description = "Fargate autoscaling CPU threshold for scale-up"
+  default     = "50"
 }

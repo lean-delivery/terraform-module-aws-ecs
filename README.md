@@ -65,8 +65,15 @@ EOF
 | launch\_type | Launch type for ECS (FARGATE or EC2 )  | string | `FARGATE` | no |
 | volume\_type | Volume type for EC2  | string | `standard` | no |
 | volume\_size | Volume size for EC2  | string | `100` | no |
-| min\_task\_count | Amount of min running task count  | string | `1` | no |
-| max\_task\_count | Amount of max running task count  | string | `10` | no |
+| autoscaling\_min\_task\_count | Amount of min running task count for fargate  | string | `1` | no |
+| autoscaling\_max\_task\_count | Amount of max running task count for fargate  | string | `10` | no |
+| autoscaling\_min\_ec2\_count | Amount of min running EC2 instances  | string | `1` | no |
+| autoscaling\_max\_ec2\_count | Amount of max running EC2 instances  | string | `3` | no |
+| autoscaling\_ec2\_desired\_capacity | EC2 instances desired capacity  | string | `1` | no |
+| autoscaling\_ec2\_cpu\_high\_threshold | EС2 autoscaling CPU threshold for scale-up  | string | `40` | no |
+| autoscaling\_ec2\_cpu\_low\_threshold | EС2 autoscaling CPU threshold for scale-down  | string | `40` | no |
+| autoscaling\_fargate\_cpu\_low\_threshold | Fargate autoscaling CPU threshold for scale-down  | string | `40` | no |
+| autoscaling\_fargate\_cpu\_high\_threshold | Fargate autoscaling CPU threshold for scale-up  | string | `50` | no |
 | availability\_zones | List of availability zones which will be provisined by autoscailing group  | list | `[]` | yes |
 | vpc\_id | The ID of VPC | string | - | yes |
 
