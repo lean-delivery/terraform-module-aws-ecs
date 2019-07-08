@@ -143,11 +143,6 @@ variable "autoscaling_max_capacity" {
   default     = "10"
 }
 
-variable "autoscaling_desired_capacity" {
-  description = "The number of instances or tasks to place and keep running"
-  default     = "1"
-}
-
 variable "autoscaling_cpu_high_threshold" {
   description = "Autoscaling CPU threshold for scale-up"
   default     = "50"

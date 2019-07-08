@@ -41,7 +41,7 @@ resource "aws_ecs_service" "this" {
   deployment_maximum_percent         = "200"
   deployment_minimum_healthy_percent = "100"
 
-  desired_count                     = "${var.autoscaling_desired_capacity}"
+  desired_count                     = "${var.autoscaling_min_capacity}"
   health_check_grace_period_seconds = "${var.health_check_grace_period_seconds}"
 
   network_configuration {
