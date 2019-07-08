@@ -19,7 +19,7 @@ module "ecs" {
 
   alb_target_group_arn = "arn:aws:elasticloadbalancing:< region >:< account ID >:targetgroup/< target group name >/3b4e9fbf82439af5"
   container_port       = "80"
-  
+
   availability_zones = "${var.availability_zones}"
 
   container_definitions = <<EOF
@@ -53,7 +53,6 @@ EOF
 | container\_port | exposed port in container | string | `80` | no |
 | ecs\_cluster\_id | ID of existing ECS cluster (if want to attach service and etc to existing cluster) | string | `none` | no |
 | environment | Environment name is used to identify resources | string | `env` | no |
-| minimum\_service\_capacity | The number of instances of the task definition to place and keep running | string | `1` | no |
 | health\_check\_grace\_period\_seconds | Seconds to ignore failing load balancer health checks on newly instantiated tasks | string | `30` | no |
 | project | Project name is used to identify resources | string | `test` | no |
 | service | Service name (will be used as family name in task definition) | string | `SuperService` | no |
@@ -65,6 +64,10 @@ EOF
 | launch\_type | Launch type for ECS (FARGATE or EC2 )  | string | `FARGATE` | no |
 | volume\_type | Volume type for EC2  | string | `standard` | no |
 | volume\_size | Volume size for EC2  | string | `100` | no |
+| autoscaling\_min\_capacity | Amount of min running task or EC2 instances | string | `1` | no |
+| autoscaling\_max\_capacity | Amount of max running task or EC2 instances  | string | `10` | no |
+| autoscaling\_cpu\_high\_threshold | Autoscaling CPU threshold for scale-up  | string | `40` | no |
+| autoscaling\_cpu\_low\_threshold | Autoscaling CPU threshold for scale-down  | string | `40` | no |
 | availability\_zones | List of availability zones which will be provisined by autoscailing group  | list | `[]` | yes |
 | vpc\_id | The ID of VPC | string | - | yes |
 

@@ -45,11 +45,6 @@ variable "container_memory" {
   default     = "1024"
 }
 
-variable "minimum_service_capacity" {
-  description = "The number of instances of the task definition to place and keep running"
-  default     = "1"
-}
-
 variable "health_check_grace_period_seconds" {
   description = "Seconds to ignore failing load balancer health checks on newly instantiated tasks to prevent premature shutdown"
   default     = "30"
@@ -111,7 +106,7 @@ variable "key-pair-name" {
 }
 
 variable "instance_type" {
-  description = "ARN of target group"
+  description = "EC2 instance type"
   type        = "string"
   default     = "t2.small"
 }
@@ -136,4 +131,24 @@ variable "volume_size" {
 variable "availability_zones" {
   description = "List of availability zones which will be provisined by autoscailing group"
   type        = "list"
+}
+
+variable "autoscaling_min_capacity" {
+  description = "Amount of min running task or EC2 instances"
+  default     = "1"
+}
+
+variable "autoscaling_max_capacity" {
+  description = "Amount of max running task or EC2 instances"
+  default     = "10"
+}
+
+variable "autoscaling_cpu_high_threshold" {
+  description = "Autoscaling CPU threshold for scale-up"
+  default     = "50"
+}
+
+variable "autoscaling_cpu_low_threshold" {
+  description = "Autoscaling CPU threshold for scale-down"
+  default     = "40"
 }
