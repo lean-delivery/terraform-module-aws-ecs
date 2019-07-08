@@ -150,7 +150,7 @@ variable "autoscaling_desired_capacity" {
 
 variable "autoscaling_cpu_high_threshold" {
   description = "Autoscaling CPU threshold for scale-up"
-  default     = "40"
+  default     = "50"
 }
 
 variable "autoscaling_cpu_low_threshold" {
