@@ -147,7 +147,7 @@ resource "aws_autoscaling_policy" "scale_policy_low_ec2" {
 }
 
 resource "aws_autoscaling_group" "autoscaling-group" {
-  name             = "${var.service}-autoscaling-group"
+  name             = "${var.environment}-${var.service}-autoscaling-group"
   max_size         = "${var.autoscaling_max_capacity}"
   min_size         = "${var.autoscaling_min_capacity}"
   desired_capacity = "${var.autoscaling_min_capacity}"
