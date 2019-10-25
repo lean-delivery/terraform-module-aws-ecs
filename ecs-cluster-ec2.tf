@@ -31,7 +31,7 @@ resource "aws_iam_instance_profile" "ecs-instance-profile_ec2" {
 }
 
 resource "aws_launch_configuration" "launch-configuration_ec2" {
-  name                 = "${var.environment}-${var.service}-launch-configuration"
+  name_prefix          = "${var.environment}-${var.service}-launch-configuration-"
   image_id             = "${data.aws_ami.ecs_optimized_ami.id}"
   instance_type        = "${var.instance_type}"
   iam_instance_profile = "${aws_iam_instance_profile.ecs-instance-profile_ec2.id}"
