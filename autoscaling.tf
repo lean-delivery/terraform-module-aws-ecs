@@ -9,7 +9,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high" {
   period              = "60"
   threshold           = "${var.autoscaling_cpu_high_threshold}"
 
-  dimensions {
+  dimensions = {
     ClusterName = "${local.ecs_cluster_name}"
     ServiceName = "${var.service}-${var.environment}"
   }
@@ -28,7 +28,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low" {
   period              = "60"
   threshold           = "${var.autoscaling_cpu_low_threshold}"
 
-  dimensions {
+  dimensions = {
     ClusterName = "${local.ecs_cluster_name}"
     ServiceName = "${var.service}-${var.environment}"
   }
