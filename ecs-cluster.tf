@@ -45,7 +45,7 @@ resource "aws_ecs_service" "this" {
   health_check_grace_period_seconds = "${var.health_check_grace_period_seconds}"
 
   network_configuration {
-    subnets         = ["${var.subnets}"]
+    subnets         = "${var.subnets}"
     security_groups = ["${data.aws_security_group.this.id}"]
   }
 
