@@ -47,7 +47,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high_ec2" {
   period              = "60"
   threshold           = "${var.autoscaling_cpu_high_threshold}"
 
-  dimensions {
+  dimensions = {
     AutoScalingGroupName = "${aws_autoscaling_group.autoscaling-group[count.index].name}"
   }
 
