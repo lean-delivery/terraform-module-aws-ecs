@@ -133,7 +133,7 @@ resource "aws_autoscaling_policy" "scale_policy_high_ec2" {
   scaling_adjustment     = 1
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 300
-  autoscaling_group_name = "${aws_autoscaling_group.autoscaling-group.name}"
+  autoscaling_group_name = "${aws_autoscaling_group.autoscaling-group[count.index].name}"
   count                  = "${var.launch_type == "FARGATE" ? 0 : 1}"
 }
 
