@@ -96,7 +96,7 @@ EOF
 
 resource "aws_iam_role_policy_attachment" "this_ec2" {
   policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
-  role       = "${aws_iam_role.ecs-service-ec2.name}"
+  role       = "${aws_iam_role.ecs-service-ec2[count.index].name}"
   count      = "${var.launch_type == "FARGATE" ? 0 : 1}"
 }
 
