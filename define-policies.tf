@@ -102,18 +102,18 @@ resource "aws_iam_role_policy_attachment" "this_ec2" {
 
 resource "aws_iam_role_policy_attachment" "this_default_ecs_ec2" {
   policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
-  role       = "${aws_iam_role.ecs-service-ec2.name}"
+  role       = "${aws_iam_role.ecs-service-ec2[count.index].name}"
   count      = "${var.launch_type == "FARGATE" ? 0 : 1}"
 }
 
 resource "aws_iam_role_policy_attachment" "attach-allow-ec2_ec2" {
-  role       = "${aws_iam_role.ecs-service-ec2.name}"
+  role       = "${aws_iam_role.ecs-service-ec2[count.index].name}"
   policy_arn = "${aws_iam_policy.ecs-service-allow-ec2.arn}"
   count      = "${var.launch_type == "FARGATE" ? 0 : 1}"
 }
 
 resource "aws_iam_role_policy_attachment" "attach-allow-elb_ec2" {
-  role       = "${aws_iam_role.ecs-service-ec2.name}"
+  role       = "${aws_iam_role.ecs-service-ec2[count.index].name}"
   policy_arn = "${aws_iam_policy.ecs-service-allow-elb.arn}"
   count      = "${var.launch_type == "FARGATE" ? 0 : 1}"
 }
