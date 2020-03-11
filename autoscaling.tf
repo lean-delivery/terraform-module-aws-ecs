@@ -152,7 +152,7 @@ resource "aws_autoscaling_group" "autoscaling-group" {
   min_size         = "${var.autoscaling_min_capacity}"
   desired_capacity = "${var.autoscaling_min_capacity}"
 
-  availability_zones   = ["${var.availability_zones}"]
+  availability_zones   = "${var.availability_zones}"
   vpc_zone_identifier  = ["${var.subnets}"]
   launch_configuration = "${aws_launch_configuration.launch-configuration_ec2[count.index].name}"
   health_check_type    = "ELB"
