@@ -16,11 +16,11 @@ module "ecs" {
 
   vpc_id  = "vpc-eizox8ea"
   subnets = ["subnet-sait0aiw", "subnet-op8phee4", "subnet-eego9xoo"]
+  availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
 
-  alb_target_group_arn = "arn:aws:elasticloadbalancing:< region >:< account ID >:targetgroup/< target group name >/3b4e9fbf82439af5"
+  alb_target_group_arn = "arn:aws:elasticloadbalancing:< region >:< account ID >:targetgroup/< target group name >/< target group id >"
+
   container_port       = "80"
-
-  availability_zones = "${var.availability_zones}"
 
   container_definitions = <<EOF
 [
