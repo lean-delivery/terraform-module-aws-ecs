@@ -119,13 +119,13 @@ resource "aws_iam_role_policy_attachment" "attach-allow-elb_ec2" {
 }
 
 resource "aws_iam_role_policy_attachment" "attach-allow-ec2" {
-  role       = "${aws_iam_role.ecs-service.name}"
+  role       = "${aws_iam_role.ecs-service[count.index].name}"
   policy_arn = "${aws_iam_policy.ecs-service-allow-ec2.arn}"
   count      = "${var.launch_type == "FARGATE" ? 1 : 0}"
 }
 
 resource "aws_iam_role_policy_attachment" "attach-allow-elb" {
-  role       = "${aws_iam_role.ecs-service.name}"
+  role       = "${aws_iam_role.ecs-service[count.index].name}"
   policy_arn = "${aws_iam_policy.ecs-service-allow-elb.arn}"
   count      = "${var.launch_type == "FARGATE" ? 1 : 0}"
 }
