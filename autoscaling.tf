@@ -154,7 +154,7 @@ resource "aws_autoscaling_group" "autoscaling-group" {
 
   availability_zones   = ["${var.availability_zones}"]
   vpc_zone_identifier  = ["${var.subnets}"]
-  launch_configuration = "${aws_launch_configuration.launch-configuration_ec2.name}"
+  launch_configuration = "${aws_launch_configuration.launch-configuration_ec2[count.index].name}"
   health_check_type    = "ELB"
 
   tag {
