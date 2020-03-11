@@ -34,7 +34,7 @@ resource "aws_launch_configuration" "launch-configuration_ec2" {
   name_prefix          = "${var.environment}-${var.service}-launch-configuration-"
   image_id             = "${data.aws_ami.ecs_optimized_ami.id}"
   instance_type        = "${var.instance_type}"
-  iam_instance_profile = "${aws_iam_instance_profile.ecs-instance-profile_ec2.id}"
+  iam_instance_profile = "${aws_iam_instance_profile.ecs-instance-profile_ec2[count.index].id}"
   key_name             = "${var.key-pair-name}"
 
   root_block_device {
