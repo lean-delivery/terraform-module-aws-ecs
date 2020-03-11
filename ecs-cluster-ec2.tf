@@ -21,7 +21,7 @@ data "aws_ami" "ecs_optimized_ami" {
 resource "aws_iam_instance_profile" "ecs-instance-profile_ec2" {
   name = "${var.environment}-${var.service}-instance-profile"
   path = "/"
-  role = "${aws_iam_role.ecs-service-ec2.id}"
+  role = "${aws_iam_role.ecs-service-ec2[count.index].id}"
 
   provisioner "local-exec" {
     command = "sleep 60"
