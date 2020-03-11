@@ -48,7 +48,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high_ec2" {
   threshold           = "${var.autoscaling_cpu_high_threshold}"
 
   dimensions {
-    AutoScalingGroupName = "${aws_autoscaling_group.autoscaling-group.name}"
+    AutoScalingGroupName = "${aws_autoscaling_group.autoscaling-group[count.index].name}"
   }
 
   count         = "${var.launch_type == "FARGATE" ? 0 : 1}"
@@ -71,7 +71,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low_ec2" {
   }
 
   count         = "${var.launch_type == "FARGATE" ? 0 : 1}"
-  alarm_actions = ["${aws_autoscaling_policy.scale_policy_low_ec2.arn}"]
+  alarm_actions = ["${aws_autoscaling_policy.scale_policy_low_ec2[count.index].arn}"]
 }
 
 resource "aws_appautoscaling_policy" "scale_policy_high" {
