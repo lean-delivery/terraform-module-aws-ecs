@@ -93,6 +93,10 @@ variable "subnets" {
   type        = "list"
 }
 
+variable "security_groups" {
+  type = "list"
+}
+
 variable "alb_target_group_arn" {
   description = "ARN of target group"
   type        = "string"
