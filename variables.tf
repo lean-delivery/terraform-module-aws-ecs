@@ -93,6 +93,10 @@ variable "subnets" {
   type        = "list"
 }
 
+variable "create_security_group" {
+  default = "true"
+}
+
 variable "security_groups" {
   type = "list"
 }
