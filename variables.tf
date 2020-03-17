@@ -97,6 +97,10 @@ variable "security_groups" {
   type = "list"
 }
 
+variable "assign_public_ip" {
+  default = "false"
+}
+
 variable "alb_target_group_arn" {
   description = "ARN of target group"
   type        = "string"
