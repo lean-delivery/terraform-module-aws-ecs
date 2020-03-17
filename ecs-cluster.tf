@@ -2,6 +2,7 @@ resource "aws_ecs_cluster" "this" {
   count = "${var.use_existant_cluster ? 0 : 1 }"
   name  = "${var.project}-${var.environment}"
   tags  = "${merge(local.default_tags, var.tags)}"
+  capacity_providers = ["FARGATE_SPOT"]
   default_capacity_provider_strategy = {
     capacity_provider = "FARGATE_SPOT"
   }
