@@ -45,6 +45,10 @@ resource "aws_ecs_service" "this" {
   desired_count                     = "${var.autoscaling_min_capacity}"
   health_check_grace_period_seconds = "${var.health_check_grace_period_seconds}"
 
+  capacity_provider_strategy {
+    capacity_provider = "FARGATE_SPOT"
+  }
+
   network_configuration {
     subnets         = "${var.subnets}"
     security_groups = "${var.create_security_group ? [data.aws_security_group.this.id] : var.security_groups }"
