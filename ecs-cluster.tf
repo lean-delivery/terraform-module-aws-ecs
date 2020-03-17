@@ -2,7 +2,6 @@ resource "aws_ecs_cluster" "this" {
   count = "${var.use_existant_cluster ? 0 : 1 }"
   name  = "${var.project}-${var.environment}"
   tags  = "${merge(local.default_tags, var.tags)}"
-  capacity_providers = ["FARGATE_SPOT"]
 }
 
 data "aws_ecs_cluster" "this" {
@@ -38,7 +37,6 @@ resource "aws_ecs_service" "this" {
   name                               = "${var.service}-${var.environment}"
   cluster                            = "${local.ecs_cluster_id}"
   task_definition                    = "${aws_ecs_task_definition.this.arn}"
-  launch_type                        = "${var.launch_type}"
   deployment_maximum_percent         = "200"
   deployment_minimum_healthy_percent = "100"
 
