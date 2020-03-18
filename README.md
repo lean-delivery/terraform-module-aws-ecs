@@ -70,6 +70,10 @@ EOF
 | autoscaling\_cpu\_low\_threshold | Autoscaling CPU threshold for scale-down  | string | `40` | no |
 | availability\_zones | List of availability zones which will be provisined by autoscailing group  | list | `[]` | yes |
 | vpc\_id | The ID of VPC | string | - | yes |
+| create_security_group | To create or not own security group for service | string | `true` | no |
+| security_groups | List of existing security groups to be reused if create_security_group is false | list | `[]` | no |
+| assign_public_ip | To assign or not public ip to task | string | `false` | no |
+| use_fargate_spot | To use or not spot tasks in Fargate | string | `false` | no |
 
 ### Container definitions default value
 
