@@ -129,6 +129,10 @@ variable "launch_type" {
   default     = "FARGATE"
 }
 
+variable "use_fargate_spot" {
+  default = "false"
+}
+
 variable "volume_type" {
   description = "Volume type for EC2"
   type        = "string"
