@@ -44,7 +44,7 @@ resource "aws_ecs_service" "this" {
   health_check_grace_period_seconds = "${var.health_check_grace_period_seconds}"
 
   capacity_provider_strategy {
-    capacity_provider = "${var.use_fargete_spot ? "FARGATE_SPOT" : "FARGATE" }"
+    capacity_provider = "${var.use_fargate_spot ? "FARGATE_SPOT" : "FARGATE" }"
     weight = "1"
   }
 
