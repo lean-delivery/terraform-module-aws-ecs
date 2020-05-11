@@ -37,16 +37,21 @@ resource "aws_ecs_service" "this" {
   name                               = "${var.service}-${var.environment}"
   cluster                            = "${local.ecs_cluster_id}"
   task_definition                    = "${aws_ecs_task_definition.this.arn}"
-  launch_type                        = "${var.launch_type}"
   deployment_maximum_percent         = "200"
   deployment_minimum_healthy_percent = "100"
 
   desired_count                     = "${var.autoscaling_min_capacity}"
   health_check_grace_period_seconds = "${var.health_check_grace_period_seconds}"
 
+  capacity_provider_strategy {
+    capacity_provider = "${var.use_fargate_spot ? "FARGATE_SPOT" : "FARGATE" }"
+    weight = "1"
+  }
+
   network_configuration {
-    subnets         = ["${var.subnets}"]
-    security_groups = ["${data.aws_security_group.this.id}"]
+    subnets         = "${var.subnets}"
+    security_groups = "${var.create_security_group ? [data.aws_security_group.this.id] : var.security_groups }"
+    assign_public_ip = "${var.assign_public_ip}"
   }
 
   load_balancer {

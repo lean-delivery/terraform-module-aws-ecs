@@ -9,7 +9,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high" {
   period              = "60"
   threshold           = "${var.autoscaling_cpu_high_threshold}"
 
-  dimensions {
+  dimensions = {
     ClusterName = "${local.ecs_cluster_name}"
     ServiceName = "${var.service}-${var.environment}"
   }
@@ -28,7 +28,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low" {
   period              = "60"
   threshold           = "${var.autoscaling_cpu_low_threshold}"
 
-  dimensions {
+  dimensions = {
     ClusterName = "${local.ecs_cluster_name}"
     ServiceName = "${var.service}-${var.environment}"
   }
@@ -47,12 +47,12 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high_ec2" {
   period              = "60"
   threshold           = "${var.autoscaling_cpu_high_threshold}"
 
-  dimensions {
-    AutoScalingGroupName = "${aws_autoscaling_group.autoscaling-group.name}"
+  dimensions = {
+    AutoScalingGroupName = "${aws_autoscaling_group.autoscaling-group[count.index].name}"
   }
 
   count         = "${var.launch_type == "FARGATE" ? 0 : 1}"
-  alarm_actions = ["${aws_autoscaling_policy.scale_policy_high_ec2.arn}"]
+  alarm_actions = ["${aws_autoscaling_policy.scale_policy_high_ec2[count.index].arn}"]
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu-low_ec2" {
@@ -66,12 +66,12 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low_ec2" {
   period              = "60"
   threshold           = "${var.autoscaling_cpu_low_threshold}"
 
-  dimensions {
-    AutoScalingGroupName = "${aws_autoscaling_group.autoscaling-group.name}"
+  dimensions = {
+    AutoScalingGroupName = "${aws_autoscaling_group.autoscaling-group[count.index].name}"
   }
 
   count         = "${var.launch_type == "FARGATE" ? 0 : 1}"
-  alarm_actions = ["${aws_autoscaling_policy.scale_policy_low_ec2.arn}"]
+  alarm_actions = ["${aws_autoscaling_policy.scale_policy_low_ec2[count.index].arn}"]
 }
 
 resource "aws_appautoscaling_policy" "scale_policy_high" {
@@ -133,7 +133,7 @@ resource "aws_autoscaling_policy" "scale_policy_high_ec2" {
   scaling_adjustment     = 1
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 300
-  autoscaling_group_name = "${aws_autoscaling_group.autoscaling-group.name}"
+  autoscaling_group_name = "${aws_autoscaling_group.autoscaling-group[count.index].name}"
   count                  = "${var.launch_type == "FARGATE" ? 0 : 1}"
 }
 
@@ -142,7 +142,7 @@ resource "aws_autoscaling_policy" "scale_policy_low_ec2" {
   scaling_adjustment     = -1
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 300
-  autoscaling_group_name = "${aws_autoscaling_group.autoscaling-group.name}"
+  autoscaling_group_name = "${aws_autoscaling_group.autoscaling-group[count.index].name}"
   count                  = "${var.launch_type == "FARGATE" ? 0 : 1}"
 }
 
@@ -152,9 +152,9 @@ resource "aws_autoscaling_group" "autoscaling-group" {
   min_size         = "${var.autoscaling_min_capacity}"
   desired_capacity = "${var.autoscaling_min_capacity}"
 
-  availability_zones   = ["${var.availability_zones}"]
-  vpc_zone_identifier  = ["${var.subnets}"]
-  launch_configuration = "${aws_launch_configuration.launch-configuration_ec2.name}"
+  availability_zones   = "${var.availability_zones}"
+  vpc_zone_identifier  = "${var.subnets}"
+  launch_configuration = "${aws_launch_configuration.launch-configuration_ec2[count.index].name}"
   health_check_type    = "ELB"
 
   tag {

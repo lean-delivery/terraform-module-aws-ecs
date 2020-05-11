@@ -16,11 +16,11 @@ module "ecs" {
 
   vpc_id  = "vpc-eizox8ea"
   subnets = ["subnet-sait0aiw", "subnet-op8phee4", "subnet-eego9xoo"]
+  availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
 
-  alb_target_group_arn = "arn:aws:elasticloadbalancing:< region >:< account ID >:targetgroup/< target group name >/3b4e9fbf82439af5"
+  alb_target_group_arn = "arn:aws:elasticloadbalancing:< region >:< account ID >:targetgroup/< target group name >/< target group id >"
+
   container_port       = "80"
-
-  availability_zones = "${var.availability_zones}"
 
   container_definitions = <<EOF
 [
@@ -66,10 +66,14 @@ EOF
 | volume\_size | Volume size for EC2  | string | `100` | no |
 | autoscaling\_min\_capacity | Amount of min running task or EC2 instances | string | `1` | no |
 | autoscaling\_max\_capacity | Amount of max running task or EC2 instances  | string | `10` | no |
-| autoscaling\_cpu\_high\_threshold | Autoscaling CPU threshold for scale-up  | string | `40` | no |
+| autoscaling\_cpu\_high\_threshold | Autoscaling CPU threshold for scale-up  | string | `50` | no |
 | autoscaling\_cpu\_low\_threshold | Autoscaling CPU threshold for scale-down  | string | `40` | no |
 | availability\_zones | List of availability zones which will be provisined by autoscailing group  | list | `[]` | yes |
 | vpc\_id | The ID of VPC | string | - | yes |
+| create_security_group | To create or not own security group for service | string | `true` | no |
+| security_groups | List of existing security groups to be reused if create_security_group is false | list | `[]` | no |
+| assign_public_ip | To assign or not public ip to task | string | `false` | no |
+| use_fargate_spot | To use or not spot tasks in Fargate | string | `false` | no |
 
 ### Container definitions default value
 

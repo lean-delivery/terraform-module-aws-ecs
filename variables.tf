@@ -93,6 +93,18 @@ variable "subnets" {
   type        = "list"
 }
 
+variable "create_security_group" {
+  default = "true"
+}
+
+variable "security_groups" {
+  type = "list"
+}
+
+variable "assign_public_ip" {
+  default = "false"
+}
+
 variable "alb_target_group_arn" {
   description = "ARN of target group"
   type        = "string"
@@ -115,6 +127,10 @@ variable "launch_type" {
   description = "Launch type for ECS [ FARGATE | EC2 ]"
   type        = "string"
   default     = "FARGATE"
+}
+
+variable "use_fargate_spot" {
+  default = "false"
 }
 
 variable "volume_type" {
