@@ -45,6 +45,11 @@ variable "container_memory" {
   default     = "1024"
 }
 
+variable "container_name" {
+  descriprion = "Name of the container which will be used for ALB configuration"
+  default     = ""
+}
+
 variable "health_check_grace_period_seconds" {
   description = "Seconds to ignore failing load balancer health checks on newly instantiated tasks to prevent premature shutdown"
   default     = "30"
