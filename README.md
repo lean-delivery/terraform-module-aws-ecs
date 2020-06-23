@@ -50,6 +50,7 @@ EOF
 | container\_cpu | Amount of cpu used by the task | string | `512` | no |
 | container\_definitions | Fargate container definition | string | see default value bellow this table | no |
 | container\_memory | Amount of memory used by the task | string | `1024` | no |
+| container\_name | Defines container name which will be used as target in ALB target group. If not set ${var.project}-${var.service} value will be used. | string | `` | no |
 | container\_port | exposed port in container | string | `80` | no |
 | ecs\_cluster\_id | ID of existing ECS cluster (if want to attach service and etc to existing cluster) | string | `none` | no |
 | environment | Environment name is used to identify resources | string | `env` | no |

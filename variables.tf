@@ -45,6 +45,11 @@ variable "container_memory" {
   default     = "1024"
 }
 
+variable "container_name" {
+  description = "Defines container name which will be used as target in ALB target group. If not set ${var.project}-${var.service} value will be used."
+  default     = ""
+}
+
 variable "health_check_grace_period_seconds" {
   description = "Seconds to ignore failing load balancer health checks on newly instantiated tasks to prevent premature shutdown"
   default     = "30"
