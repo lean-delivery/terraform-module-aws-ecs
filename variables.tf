@@ -46,7 +46,7 @@ variable "container_memory" {
 }
 
 variable "container_name" {
-  description = "Defines container name which will be used as target in ALB target group. If not set ${var.project}-${var.service} value will be used."
+  description = "Defines container name which will be used as target in ALB target group. If not set 'var.project-var.service' value will be used."
   default     = ""
 }
 
