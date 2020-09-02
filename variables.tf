@@ -1,11 +1,11 @@
 variable "project" {
-  type        = "string"
+  type        = string
   default     = "project"
   description = "Project name is used to identify resources"
 }
 
 variable "environment" {
-  type        = "string"
+  type        = string
   default     = "env"
   description = "Environment name is used to identify resources"
 }
@@ -40,22 +40,23 @@ variable "container_definitions" {
 }
 
 variable "tags" {
-  type        = "map"
+  type        = map(string)
   description = "Additional tags for all resources"
   default     = {}
 }
 
 variable "vpc_id" {
   description = "The ID of VPC"
-  type        = "string"
+  type        = string
 }
 
 variable "subnets" {
   description = "List of subnets where to run ECS Service"
-  type        = "list"
+  type        = list(string)
 }
 
 variable "alb_target_group_arn" {
   description = "ARN of target group"
-  type        = "string"
+  type        = string
 }
+

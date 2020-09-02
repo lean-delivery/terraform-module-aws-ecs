@@ -39,13 +39,13 @@ data "aws_iam_policy_document" "ecs-service-allow-elb" {
 resource "aws_iam_policy" "ecs-service-allow-ec2" {
   name        = "ecs-service-allow-ec2-${var.project}-${var.service}-${var.environment}"
   description = "ECS Service policy to access EC2"
-  policy      = "${data.aws_iam_policy_document.ecs-service-allow-ec2.json}"
+  policy      = data.aws_iam_policy_document.ecs-service-allow-ec2.json
 }
 
 resource "aws_iam_policy" "ecs-service-allow-elb" {
   name        = "ecs-service-allow-elb-${var.project}-${var.service}-${var.environment}"
   description = "ECS Service policy to access ELB"
-  policy      = "${data.aws_iam_policy_document.ecs-service-allow-elb.json}"
+  policy      = data.aws_iam_policy_document.ecs-service-allow-elb.json
 }
 
 resource "aws_iam_role" "ecs-service" {
@@ -67,19 +67,21 @@ resource "aws_iam_role" "ecs-service" {
 }
 EOF
 
-  tags = "${merge(local.default_tags, var.tags)}"
+
+  tags = merge(local.default_tags, var.tags)
 }
 
 resource "aws_iam_role_policy_attachment" "attach-allow-ec2" {
-  role       = "${aws_iam_role.ecs-service.name}"
-  policy_arn = "${aws_iam_policy.ecs-service-allow-ec2.arn}"
+  role       = aws_iam_role.ecs-service.name
+  policy_arn = aws_iam_policy.ecs-service-allow-ec2.arn
 }
 
 resource "aws_iam_role_policy_attachment" "attach-allow-elb" {
-  role       = "${aws_iam_role.ecs-service.name}"
-  policy_arn = "${aws_iam_policy.ecs-service-allow-elb.arn}"
+  role       = aws_iam_role.ecs-service.name
+  policy_arn = aws_iam_policy.ecs-service-allow-elb.arn
 }
 
 data "aws_iam_role" "ecs-task-execution" {
   name = "ecsTaskExecutionRole"
 }
+

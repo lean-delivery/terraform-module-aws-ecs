@@ -20,7 +20,7 @@ data "aws_iam_policy_document" "service-autoscaling" {
 resource "aws_iam_policy" "service-autoscaling" {
   name        = "service-autoscaling-${var.project}-${var.service}-${var.environment}"
   description = "ECS autoscaling policy"
-  policy      = "${data.aws_iam_policy_document.service-autoscaling.json}"
+  policy      = data.aws_iam_policy_document.service-autoscaling.json
 }
 
 resource "aws_iam_role" "service-autoscaling" {
@@ -42,12 +42,13 @@ resource "aws_iam_role" "service-autoscaling" {
 }
 EOF
 
-  tags = "${merge(local.default_tags, var.tags)}"
+
+  tags = merge(local.default_tags, var.tags)
 }
 
 resource "aws_iam_role_policy_attachment" "attach-autoscaling" {
-  role       = "${aws_iam_role.service-autoscaling.name}"
-  policy_arn = "${aws_iam_policy.service-autoscaling.arn}"
+  role       = aws_iam_role.service-autoscaling.name
+  policy_arn = aws_iam_policy.service-autoscaling.arn
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu-high" {
@@ -61,12 +62,12 @@ resource "aws_cloudwatch_metric_alarm" "cpu-high" {
   period              = "60"
   threshold           = "50"
 
-  dimensions {
-    ClusterName = "${aws_ecs_cluster.this.id}"
+  dimensions = {
+    ClusterName = aws_ecs_cluster.this.id
     ServiceName = "${var.service}-${var.environment}"
   }
 
-  alarm_actions = ["${aws_appautoscaling_policy.scale_policy_high.arn}"]
+  alarm_actions = [aws_appautoscaling_policy.scale_policy_high.arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu-low" {
@@ -80,12 +81,12 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low" {
   period              = "60"
   threshold           = "40"
 
-  dimensions {
-    ClusterName = "${aws_ecs_cluster.this.id}"
+  dimensions = {
+    ClusterName = aws_ecs_cluster.this.id
     ServiceName = "${var.service}-${var.environment}"
   }
 
-  alarm_actions = ["${aws_appautoscaling_policy.scale_policy_low.arn}"]
+  alarm_actions = [aws_appautoscaling_policy.scale_policy_low.arn]
 }
 
 resource "aws_appautoscaling_policy" "scale_policy_high" {
@@ -106,7 +107,7 @@ resource "aws_appautoscaling_policy" "scale_policy_high" {
     }
   }
 
-  depends_on = ["aws_appautoscaling_target.ecs_target"]
+  depends_on = [aws_appautoscaling_target.ecs_target]
 }
 
 resource "aws_appautoscaling_policy" "scale_policy_low" {
@@ -127,14 +128,15 @@ resource "aws_appautoscaling_policy" "scale_policy_low" {
     }
   }
 
-  depends_on = ["aws_appautoscaling_target.ecs_target"]
+  depends_on = [aws_appautoscaling_target.ecs_target]
 }
 
 resource "aws_appautoscaling_target" "ecs_target" {
   max_capacity       = 10
   min_capacity       = 1
   resource_id        = "service/${aws_ecs_cluster.this.name}/${aws_ecs_service.this.name}"
-  role_arn           = "${aws_iam_role.service-autoscaling.arn}"
+  role_arn           = aws_iam_role.service-autoscaling.arn
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
 }
+
