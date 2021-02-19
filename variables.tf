@@ -1,11 +1,11 @@
 variable "project" {
-  type        = "string"
+  type        = string
   default     = "test"
   description = "Project name is used to identify resources"
 }
 
 variable "environment" {
-  type        = "string"
+  type        = string
   default     = "env"
   description = "Environment name is used to identify resources"
 }
@@ -75,6 +75,7 @@ variable "container_definitions" {
   }
 ]
 DEFINITION
+
 }
 
 variable "task_role_arn" {
@@ -83,48 +84,48 @@ variable "task_role_arn" {
 }
 
 variable "tags" {
-  type        = "map"
+  type        = map(string)
   description = "Additional tags for all resources"
   default     = {}
 }
 
 variable "vpc_id" {
   description = "The ID of VPC"
-  type        = "string"
+  type        = string
 }
 
 variable "subnets" {
   description = "List of subnets where to run ECS Service"
-  type        = "list"
+  type        = list(string)
 }
 
 variable "alb_target_group_arn" {
   description = "ARN of target group"
-  type        = "string"
+  type        = string
   default     = "none"
 }
 
 variable "key-pair-name" {
   description = "key-pair name for ec2"
-  type        = "string"
+  type        = string
   default     = "ecs-nodes"
 }
 
 variable "instance_type" {
   description = "EC2 instance type"
-  type        = "string"
+  type        = string
   default     = "t2.small"
 }
 
 variable "launch_type" {
   description = "Launch type for ECS [ FARGATE | EC2 ]"
-  type        = "string"
+  type        = string
   default     = "FARGATE"
 }
 
 variable "volume_type" {
   description = "Volume type for EC2"
-  type        = "string"
+  type        = string
   default     = "standard"
 }
 
@@ -135,7 +136,7 @@ variable "volume_size" {
 
 variable "availability_zones" {
   description = "List of availability zones which will be provisined by autoscailing group"
-  type        = "list"
+  type        = list(string)
 }
 
 variable "autoscaling_min_capacity" {
@@ -157,3 +158,4 @@ variable "autoscaling_cpu_low_threshold" {
   description = "Autoscaling CPU threshold for scale-down"
   default     = "40"
 }
+
