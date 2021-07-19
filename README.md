@@ -71,6 +71,7 @@ EOF
 | autoscaling\_cpu\_low\_threshold | Autoscaling CPU threshold for scale-down  | string | `40` | no |
 | availability\_zones | List of availability zones which will be provisined by autoscailing group  | list | `[]` | yes |
 | vpc\_id | The ID of VPC | string | - | yes |
+| container\_insights\_monitoring | Defines enable/disable Cloudwatch Container Insights monitoring | string | `disabled` | no |
 
 ### Container definitions default value
 

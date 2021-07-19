@@ -1,6 +1,11 @@
 resource "aws_ecs_cluster" "this" {
   count = var.use_existant_cluster ? 0 : 1
   name  = "${var.project}-${var.environment}"
+
+  setting {
+    name  = "containerInsights"
+    value = var.container_insights_monitoring
+  }
   tags  = merge(local.default_tags, var.tags)
 }
 
