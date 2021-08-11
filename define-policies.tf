@@ -39,13 +39,13 @@ data "aws_iam_policy_document" "ecs-service-allow-elb" {
 resource "aws_iam_policy" "ecs-service-allow-ec2" {
   name        = "ecs-service-allow-ec2-${var.project}-${var.service}-${var.environment}"
   description = "ECS Service policy to access EC2"
-  policy      = "${data.aws_iam_policy_document.ecs-service-allow-ec2.json}"
+  policy      = data.aws_iam_policy_document.ecs-service-allow-ec2.json
 }
 
 resource "aws_iam_policy" "ecs-service-allow-elb" {
   name        = "ecs-service-allow-elb-${var.project}-${var.service}-${var.environment}"
   description = "ECS Service policy to access ELB"
-  policy      = "${data.aws_iam_policy_document.ecs-service-allow-elb.json}"
+  policy      = data.aws_iam_policy_document.ecs-service-allow-elb.json
 }
 
 resource "aws_iam_role" "ecs-service" {
@@ -67,11 +67,13 @@ resource "aws_iam_role" "ecs-service" {
 }
 EOF
 
-  count = "${var.launch_type == "FARGATE" ? 1 : 0}"
-  tags  = "${merge(local.default_tags, var.tags)}"
+  count = var.launch_type == "FARGATE" ? 1 : 0
+  tags  = merge(local.default_tags, var.tags)
 }
 
 resource "aws_iam_role" "ecs-service-ec2" {
+  count = var.launch_type == "FARGATE" ? 0 : 1
+
   name = "ecs-service-ec2-${var.project}-${var.service}-${var.environment}"
 
   assume_role_policy = <<EOF
@@ -90,44 +92,43 @@ resource "aws_iam_role" "ecs-service-ec2" {
 }
 EOF
 
-  count = "${var.launch_type == "FARGATE" ? 0 : 1}"
-  tags  = "${merge(local.default_tags, var.tags)}"
+  tags  = merge(local.default_tags, var.tags)
 }
 
 resource "aws_iam_role_policy_attachment" "this_ec2" {
+  count      = var.launch_type == "FARGATE" ? 0 : 1
   policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
-  role       = "${aws_iam_role.ecs-service-ec2[count.index].name}"
-  count      = "${var.launch_type == "FARGATE" ? 0 : 1}"
+  role       = aws_iam_role.ecs-service-ec2[count.index].name
 }
 
 resource "aws_iam_role_policy_attachment" "this_default_ecs_ec2" {
+  count      = var.launch_type == "FARGATE" ? 0 : 1
   policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
-  role       = "${aws_iam_role.ecs-service-ec2[count.index].name}"
-  count      = "${var.launch_type == "FARGATE" ? 0 : 1}"
+  role       = aws_iam_role.ecs-service-ec2[count.index].name
 }
 
 resource "aws_iam_role_policy_attachment" "attach-allow-ec2_ec2" {
-  role       = "${aws_iam_role.ecs-service-ec2[count.index].name}"
-  policy_arn = "${aws_iam_policy.ecs-service-allow-ec2.arn}"
-  count      = "${var.launch_type == "FARGATE" ? 0 : 1}"
+  count      = var.launch_type == "FARGATE" ? 0 : 1
+  role       = aws_iam_role.ecs-service-ec2[count.index].name
+  policy_arn = aws_iam_policy.ecs-service-allow-ec2.arn
 }
 
 resource "aws_iam_role_policy_attachment" "attach-allow-elb_ec2" {
-  role       = "${aws_iam_role.ecs-service-ec2[count.index].name}"
-  policy_arn = "${aws_iam_policy.ecs-service-allow-elb.arn}"
-  count      = "${var.launch_type == "FARGATE" ? 0 : 1}"
+  count      = var.launch_type == "FARGATE" ? 0 : 1
+  role       = aws_iam_role.ecs-service-ec2[count.index].name
+  policy_arn = aws_iam_policy.ecs-service-allow-elb.arn
 }
 
 resource "aws_iam_role_policy_attachment" "attach-allow-ec2" {
-  role       = "${aws_iam_role.ecs-service[count.index].name}"
-  policy_arn = "${aws_iam_policy.ecs-service-allow-ec2.arn}"
-  count      = "${var.launch_type == "FARGATE" ? 1 : 0}"
+  count      = var.launch_type == "FARGATE" ? 1 : 0
+  role       = aws_iam_role.ecs-service[count.index].name
+  policy_arn = aws_iam_policy.ecs-service-allow-ec2.arn
 }
 
 resource "aws_iam_role_policy_attachment" "attach-allow-elb" {
-  role       = "${aws_iam_role.ecs-service[count.index].name}"
-  policy_arn = "${aws_iam_policy.ecs-service-allow-elb.arn}"
-  count      = "${var.launch_type == "FARGATE" ? 1 : 0}"
+  count      = var.launch_type == "FARGATE" ? 1 : 0
+  role       = aws_iam_role.ecs-service[count.index].name
+  policy_arn = aws_iam_policy.ecs-service-allow-elb.arn
 }
 
 # data "aws_iam_role" "ecs-task-execution" {
@@ -169,13 +170,13 @@ data "aws_iam_policy_document" "ecs-task-access-cloudwatch" {
 resource "aws_iam_policy" "ecs-task-access-ecr" {
   name        = "ecs-task-allow-ec2-${var.project}-${var.service}-${var.environment}"
   description = "ECS task policy to access ECR"
-  policy      = "${data.aws_iam_policy_document.ecs-task-access-ecr.json}"
+  policy      = data.aws_iam_policy_document.ecs-task-access-ecr.json
 }
 
 resource "aws_iam_policy" "ecs-task-access-cloudwatch" {
   name        = "ecs-task-allow-elb-${var.project}-${var.service}-${var.environment}"
   description = "ECS task policy to access CloudWatch"
-  policy      = "${data.aws_iam_policy_document.ecs-task-access-cloudwatch.json}"
+  policy      = data.aws_iam_policy_document.ecs-task-access-cloudwatch.json
 }
 
 resource "aws_iam_role" "ecs-task-execution" {
@@ -197,15 +198,15 @@ resource "aws_iam_role" "ecs-task-execution" {
 }
 EOF
 
-  tags = "${merge(local.default_tags, var.tags)}"
+  tags = merge(local.default_tags, var.tags)
 }
 
 resource "aws_iam_role_policy_attachment" "attach-allow-ecr" {
-  role       = "${aws_iam_role.ecs-task-execution.name}"
-  policy_arn = "${aws_iam_policy.ecs-task-access-ecr.arn}"
+  role       = aws_iam_role.ecs-task-execution.name
+  policy_arn = aws_iam_policy.ecs-task-access-ecr.arn
 }
 
 resource "aws_iam_role_policy_attachment" "attach-allow-cw" {
-  role       = "${aws_iam_role.ecs-task-execution.name}"
-  policy_arn = "${aws_iam_policy.ecs-task-access-cloudwatch.arn}"
+  role       = aws_iam_role.ecs-task-execution.name
+  policy_arn = aws_iam_policy.ecs-task-access-cloudwatch.arn
 }
