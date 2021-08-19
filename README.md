@@ -20,7 +20,7 @@ module "ecs" {
 
   alb_target_group_arn = "arn:aws:elasticloadbalancing:< region >:< account ID >:targetgroup/< target group name >/< target group id >"
 
-  container_port       = "80"
+  container_port       = 80
 
   container_definitions = <<EOF
 [
@@ -50,16 +50,16 @@ EOF
 | container\_cpu | Amount of cpu used by the task | string | `512` | no |
 | container\_definitions | Fargate container definition | string | see default value bellow this table | no |
 | container\_memory | Amount of memory used by the task | string | `1024` | no |
-| container\_port | exposed port in container | string | `80` | no |
+| container\_port | exposed port in container | number | `80` | no |
 | ecs\_cluster\_id | ID of existing ECS cluster (if want to attach service and etc to existing cluster) | string | `none` | no |
 | environment | Environment name is used to identify resources | string | `env` | no |
 | health\_check\_grace\_period\_seconds | Seconds to ignore failing load balancer health checks on newly instantiated tasks | string | `30` | no |
-| project | Project name is used to identify resources | string | `test` | no |
+| proje ct | Project name is used to identify resources | string | `test` | no |
 | service | Service name (will be used as family name in task definition) | string | `SuperService` | no |
 | subnets | List of subnets where to run ECS Service | list | - | yes |
 | tags | Additional tags for all resources | map | `<map>` | no |
 | task\_role\_arn | ARN of IAM role that should be passed into container to access AWS resources from it. | string | `` | no |
-| use\_existant\_cluster | Bool statement to declare usage of existant ECS cluster | string | `false` | no |
+| use\_existant\_cluster | Bool statement to declare usage of existant ECS cluster | bool | `false` | no |
 | instance\_type | Instance type of nodes for ECS with "EC2" launch type  | string | `t2.small` | no |
 | launch\_type | Launch type for ECS (FARGATE or EC2 )  | string | `FARGATE` | no |
 | volume\_type | Volume type for EC2  | string | `standard` | no |
@@ -70,10 +70,10 @@ EOF
 | autoscaling\_cpu\_low\_threshold | Autoscaling CPU threshold for scale-down  | string | `40` | no |
 | availability\_zones | List of availability zones which will be provisined by autoscailing group  | list | `[]` | yes |
 | vpc\_id | The ID of VPC | string | - | yes |
-| create_security_group | To create or not own security group for service | string | `true` | no |
+| create_security_group | To create or not own security group for service | bool | `true` | no |
 | security_groups | List of existing security groups to be reused if create_security_group is false | list | `[]` | no |
-| assign_public_ip | To assign or not public ip to task | string | `false` | no |
-| use_fargate_spot | To use or not spot tasks in Fargate | string | `false` | no |
+| assign_public_ip | To assign or not public ip to task | bool | `false` | no |
+| use_fargate_spot | To use or not spot tasks in Fargate | bool | `false` | no |
 
 ### Container definitions default value
 
