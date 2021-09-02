@@ -163,3 +163,15 @@ variable "container_insights_monitoring" {
   description = "Defines enable/disable Cloudwatch Container Insights monitoring"
   default     = "disabled"
 }
+
+variable "enable_circuit_breaker" {
+  type        = bool
+  default     = false
+  description = "Whether to enable deployment circuit breaker"
+}
+
+variable "enable_rollback" {
+  type        = bool
+  default     = false
+  description = "Whether to enable deployment rollback with circuit breaker"
+}

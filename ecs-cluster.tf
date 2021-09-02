@@ -6,7 +6,7 @@ resource "aws_ecs_cluster" "this" {
     name  = "containerInsights"
     value = var.container_insights_monitoring
   }
-  tags  = merge(local.default_tags, var.tags)
+  tags = merge(local.default_tags, var.tags)
 }
 
 data "aws_ecs_cluster" "this" {
@@ -67,6 +67,11 @@ resource "aws_ecs_service" "this" {
     target_group_arn = var.alb_target_group_arn
     container_name   = var.container_name == "" ? "${var.service}-${var.environment}" : var.container_name
     container_port   = var.container_port
+  }
+
+  deployment_circuit_breaker {
+    enable   = var.enable_circuit_breaker
+    rollback = var.enable_rollback
   }
 
   lifecycle {
