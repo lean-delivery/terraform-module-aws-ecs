@@ -72,6 +72,8 @@ EOF
 | availability\_zones | List of availability zones which will be provisined by autoscailing group  | list | `[]` | yes |
 | vpc\_id | The ID of VPC | string | - | yes |
 | container\_insights\_monitoring | Defines enable/disable Cloudwatch Container Insights monitoring | string | `disabled` | no |
+| enable\_circuit\_breaker | Enable deployment circuit breaker | bool | false | no |
+| enable\_rollback | Enable deployment rollback with circuit breaker | bool | false | no |
 
 ### Container definitions default value
 
