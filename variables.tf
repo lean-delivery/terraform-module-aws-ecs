@@ -77,6 +77,11 @@ variable "task_role_arn" {
   default     = ""
 }
 
+variable "aws_secrets_manager_secret_arn" {
+  description = "ARN of specific AWS Secrets Manager secret which stores credentials for accessing private docker images registry"
+  default     = ""
+}
+
 variable "tags" {
   type        = "map"
   description = "Additional tags for all resources"

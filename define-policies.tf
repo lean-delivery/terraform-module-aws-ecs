@@ -134,6 +134,21 @@ resource "aws_iam_role_policy_attachment" "attach-allow-elb" {
 #   name = "ecsTaskExecutionRole"
 # }
 
+data "aws_iam_policy_document" "ecs-service-allow-secrets-manager" {
+  count = "${var.aws_secrets_manager_secret_arn != "" ? 1 : 0}"
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "secretsmanager:GetSecretValue"
+    ]
+
+    resources = [
+      "${var.aws_secrets_manager_secret_arn}"
+    ]
+  }
+}
+
 data "aws_iam_policy_document" "ecs-task-access-ecr" {
   statement {
     effect = "Allow"
@@ -164,6 +179,13 @@ data "aws_iam_policy_document" "ecs-task-access-cloudwatch" {
       "*",
     ]
   }
+}
+
+resource "aws_iam_policy" "ecs-service-allow-secrets-manager" {
+  count = "${var.aws_secrets_manager_secret_arn != "" ? 1 : 0}"
+  name        = "ecs-service-allow-secrets-manager-${var.project}-${var.service}-${var.environment}"
+  description = "ECS Service policy to access Secrets Manager"
+  policy      = "${data.aws_iam_policy_document.ecs-service-allow-secrets-manager.json}"
 }
 
 resource "aws_iam_policy" "ecs-task-access-ecr" {
@@ -198,6 +220,12 @@ resource "aws_iam_role" "ecs-task-execution" {
 EOF
 
   tags = "${merge(local.default_tags, var.tags)}"
+}
+
+resource "aws_iam_role_policy_attachment" "attach-allow-secrets-manager" {
+  count = "${var.aws_secrets_manager_secret_arn != "" ? 1 : 0}"
+  role       = "${aws_iam_role.ecs-task-execution.name}"
+  policy_arn = "${aws_iam_policy.ecs-service-allow-secrets-manager.arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "attach-allow-ecr" {
