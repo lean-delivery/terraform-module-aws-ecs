@@ -1,6 +1,6 @@
 module "security-group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "3.4.0"
+  version = "4.7.0"
 
   # insert the 2 required variables here
   name        = "${var.project}-${var.environment}-ecs-fargate-${var.service}"
