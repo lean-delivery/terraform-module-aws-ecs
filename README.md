@@ -74,6 +74,7 @@ EOF
 | container\_insights\_monitoring | Defines enable/disable Cloudwatch Container Insights monitoring | string | `disabled` | no |
 | enable\_circuit\_breaker | Enable deployment circuit breaker | bool | false | no |
 | enable\_rollback | Enable deployment rollback with circuit breaker | bool | false | no |
+| enable\_execute\_command | Whether to enable execute command for service | bool | false | no |
 
 ### Container definitions default value
 

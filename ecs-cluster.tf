@@ -74,8 +74,9 @@ resource "aws_ecs_service" "this" {
     rollback = var.enable_rollback
   }
 
+  enable_execute_command = var.enable_execute_command
+
   lifecycle {
     ignore_changes = [desired_count]
   }
 }
-

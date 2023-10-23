@@ -175,3 +175,9 @@ variable "enable_rollback" {
   default     = false
   description = "Whether to enable deployment rollback with circuit breaker"
 }
+
+variable "enable_execute_command" {
+  type        = bool
+  default     = false
+  description = "Whether to enable execute command for service"
+}
