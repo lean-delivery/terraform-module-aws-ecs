@@ -76,6 +76,8 @@ resource "aws_ecs_service" "this" {
 
   enable_execute_command = var.enable_execute_command
 
+  propagate_tags = "SERVICE"
+
   lifecycle {
     ignore_changes = [desired_count]
   }
